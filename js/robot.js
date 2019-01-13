@@ -78,7 +78,7 @@ class Robot extends Player {
                 if (this.CanMove(randomDirection)) {
                     let location = this.AddDirection(locationX, locationY, randomDirection);
                     if (!(!(GameState.Map.Tiles[location[0]][location[1]].From === this.ID) && GameState.Map.Tiles[location[0]][location[1]].State == 1)) {
-                        if (this.Shielding != 0 && GameState.TrapPlayerAt(GameState.Players[j].ID, location[0], location[1])) {
+                        if (this.Shielding != 0 && GameState.TrapPlayerAt(this.ID, location[0], location[1])) {
                             this.MovingIn(randomDirection);
                         }
                     }
