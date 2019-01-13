@@ -9,21 +9,25 @@ body {
 
 header {
     text-align: center;
-    height: 50px;
+    height: 8vh;
     background: rgb(221,221,221);
     border-bottom: 2px solid black;
 }
 
 header h1 {
-    padding-top: 10px;
+    padding-top: 8px;
 }
 
 footer {
-    height: 100px;
+    height: 20vh;
     background: rgb(221,221,221);
     border-top: 2px solid black;
 }
 
 main {
     margin: 10px 0;
+}
+
+#ColorDeathSquare {
+    height: 80vh;
 }
