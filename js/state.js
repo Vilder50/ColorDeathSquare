@@ -38,12 +38,12 @@ class State {
         }
     }
 
-    TrapPlayerAt(thisID,x,y) {
+    PlayerAt(thisID,x,y,power) {
         for (let j = 0; j < GameState.Players.length; j++) {
             if (GameState.Players[j].ID != thisID) {
                 let exactLocationX = Math.round(GameState.Players[j].X / 1000);
                 let exactLocationY = Math.round(GameState.Players[j].Y / 1000);
-                if (x == exactLocationX && y == exactLocationY && GameState.Players[j].Points >= 20) {
+                if (x == exactLocationX && y == exactLocationY && GameState.Players[j].Points >= power && !GameState.Players[j].Dead) {
                     return true;
                 }
             }

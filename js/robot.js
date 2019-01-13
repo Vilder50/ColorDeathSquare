@@ -41,7 +41,7 @@ class Robot extends Player {
             while (possibleDirection.length == 0 && distance <= 10) {
                 distance++;
                 for (let i = 0; i < spreads.length; i++) {
-                    if (this.Shielding == 0 && GameState.TrapPlayerAt(this.ID, spreads[i].X, spreads[i].Y)) {
+                    if (this.Shielding == 0 && GameState.PlayerAt(this.ID, spreads[i].X, spreads[i].Y, 20)) {
                         trapOut = true;
                         continue;
                     }
@@ -78,7 +78,7 @@ class Robot extends Player {
                 if (this.CanMove(randomDirection)) {
                     let location = this.AddDirection(locationX, locationY, randomDirection);
                     if (!(!(GameState.Map.Tiles[location[0]][location[1]].From === this.ID) && GameState.Map.Tiles[location[0]][location[1]].State == 1)) {
-                        if (this.Shielding != 0 && GameState.TrapPlayerAt(this.ID, location[0], location[1])) {
+                        if (this.Shielding != 0 && GameState.PlayerAt(this.ID, location[0], location[1], 20)) {
                             this.MovingIn(randomDirection);
                         }
                     }
