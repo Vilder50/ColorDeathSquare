@@ -37,4 +37,18 @@ class State {
             this.Map.ColorTile(this.Players[i].X / 1000, this.Players[i].Y / 1000, this.Players[i].ID)
         }
     }
+
+    TrapPlayerAt(thisID,x,y) {
+        for (let j = 0; j < GameState.Players.length; j++) {
+            if (GameState.Players[j].ID != thisID) {
+                let exactLocationX = Math.round(GameState.Players[j].X / 1000);
+                let exactLocationY = Math.round(GameState.Players[j].Y / 1000);
+                if (x == exactLocationX && y == exactLocationY && GameState.Players[j].Points >= 20) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
