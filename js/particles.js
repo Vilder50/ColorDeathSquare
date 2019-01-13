@@ -72,10 +72,11 @@ class TrapParticle {
 }
 
 class DeathMarker {
-    constructor(x, y, color) {
+    constructor(x, y, color, killer) {
         this.X = x;
         this.Y = y;
         this.Color = color;
+        this.Killer = killer;
     }
 
     Update() {
@@ -87,9 +88,16 @@ class DeathMarker {
         let middleX = GameState.MapOffsetX + 2 + this.X * GameState.Map.TileSize + GameState.Map.TileSize / 2;
         let middleY = GameState.MapOffsetY + 2 + this.Y * GameState.Map.TileSize + GameState.Map.TileSize / 2;
         GameState.Canvas.translate(middleX, middleY);
+        GameState.Canvas.strokeStyle = "#000000";
+        if (this.Killer != undefined) {
+            GameState.Canvas.rotate(Math.PI / 4);
+            GameState.Canvas.fillStyle = this.Killer;
+            GameState.Canvas.fillRect(size / -1.5, size / -1.5, size * 1.35, size * 1.35);
+            GameState.Canvas.strokeRect(size / -1.5, size / -1.5, size * 1.35, size * 1.35);
+            GameState.Canvas.rotate(Math.PI / -4);
+        }
         GameState.Canvas.fillStyle = this.Color;
         GameState.Canvas.fillRect(size / -2, size / -2, size, size);
-        GameState.Canvas.fillStyle = "#000000";
         GameState.Canvas.lineWidth = 2;
         GameState.Canvas.strokeRect(size / -2, size / -2, size, size);
         GameState.Canvas.setTransform(1, 0, 0, 1, 0, 0);

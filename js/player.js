@@ -260,18 +260,19 @@
                 GameState.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.cos(direction) * (Math.random() * 1.5), Math.sin(direction) * (Math.random() * 1.5), 1 + Math.random() * 0.4, useColor, GameState.Map.TileSize / 4 + Math.random() * 2));
             }
             if (this.Shielding == 0) {
-                this.Kill();
+                let killerColor = GetColor(tile.From);
+                this.Kill("rgb(" + killerColor[0] + "," + killerColor[1] + "," + killerColor[2] + ")");
                 return true;
             }
         }
         return false;
     }
 
-    Kill() {
+    Kill(killer) {
         this.Dead = true;
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
-        GameState.Particles.push(new DeathMarker(locationX, locationY, "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")"));
+        GameState.Particles.push(new DeathMarker(locationX, locationY, "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")", killer));
         for (let i = 0; i < 50; i++) {
             let useColor = null;
             if (i % 2 == 0) {
