@@ -7,6 +7,7 @@ body {
     overflow: hidden;
 }
 
+/*Header*/
 header {
     text-align: center;
     height: 8vh;
@@ -16,14 +17,12 @@ header {
 
 header h1 {
     padding-top: 8px;
+    font-size: 5vh;
 }
+/*Header*/
 
-footer {
-    height: 20vh;
-    background: rgb(221,221,221);
-    border-top: 2px solid black;
-}
 
+/*Game*/
 main {
     margin: 10px 0;
 }
@@ -31,3 +30,16 @@ main {
 #ColorDeathSquare {
     height: 80vh;
 }
+/*Game*/
+
+/*Footer*/
+footer {
+    height: 15vh;
+    background: rgb(221,221,221);
+    border-top: 2px solid black;
+}
+
+footer h6 {
+    font-size: 1.5vh;
+}
+/*Footer*/
