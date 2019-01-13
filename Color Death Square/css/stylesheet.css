@@ -1,0 +1,29 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow: hidden;
+}
+
+header {
+    text-align: center;
+    height: 50px;
+    background: rgb(221,221,221);
+    border-bottom: 2px solid black;
+}
+
+header h1 {
+    padding-top: 10px;
+}
+
+footer {
+    height: 100px;
+    background: rgb(221,221,221);
+    border-top: 2px solid black;
+}
+
+main {
+    margin: 10px 0;
+}
