@@ -16,20 +16,20 @@ class State {
     }
 
     StartGame() {
-        this.Canvas.clearRect(0, 0, 1120, 630);
+        this.Canvas.clearRect(0, 0, 1280, 720);
         let totalSize = this.Players.length * 20;
         let around = Math.round(Math.sqrt(totalSize));
         let randomness = Math.floor(totalSize / 15);
         let width = around + Math.floor(Math.random() * randomness - randomness / 2);
         let height = Math.round(totalSize / width);
-        let tileSize = Math.floor(626 / Math.max(width, height));
+        let tileSize = Math.floor((720 - 4) / Math.max(width, height));
 
         this.State = 1;
         this.Particles = [];
 
         this.Map = new Map(width, height, tileSize);
-        this.MapOffsetX = Math.floor((1120 - GameState.Map.Width * GameState.Map.TileSize - 4) / 2);
-        this.MapOffsetY = Math.floor((630 - GameState.Map.Height * GameState.Map.TileSize - 4) / 2);
+        this.MapOffsetX = Math.floor((1280 - GameState.Map.Width * GameState.Map.TileSize - 4) / 2);
+        this.MapOffsetY = Math.floor((720 - GameState.Map.Height * GameState.Map.TileSize - 4) / 2);
         for (let i = 0; i < this.Players.length; i++) {
             this.Players[i].X = Math.floor(Math.random() * width) * 1000;
             this.Players[i].Y = Math.floor(Math.random() * height) * 1000;
