@@ -7,8 +7,8 @@ class Robot extends Player {
     Power() {
         if (this.Points >= 40) {
             this.Points -= 20;
-            GameState.Map.ColorTile(Math.round(this.X / 1000), Math.round(this.Y / 1000), this.ID);
-            GameState.Map.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000));
+            GameState.LoadedMenu.Map.ColorTile(Math.round(this.X / 1000), Math.round(this.Y / 1000), this.ID);
+            GameState.LoadedMenu.Map.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000));
         }
     }
 
@@ -16,9 +16,9 @@ class Robot extends Player {
         if (!this.Moving()) {
             let spreadedMap = [];
             let spreads = [];
-            for (let x = 0; x < GameState.Map.Width; x++) {
+            for (let x = 0; x < GameState.LoadedMenu.Map.Width; x++) {
                 spreadedMap.push([]);
-                for (let y = 0; y < GameState.Map.Height; y++) {
+                for (let y = 0; y < GameState.LoadedMenu.Map.Height; y++) {
                     spreadedMap[x].push(false);
                 }
             }
@@ -45,8 +45,8 @@ class Robot extends Player {
                         trapOut = true;
                         continue;
                     }
-                    if (!(GameState.Map.Tiles[spreads[i].X][spreads[i].Y].From === this.ID)) {
-                        if (GameState.Map.Tiles[spreads[i].X][spreads[i].Y].State == 1 && this.Shielding == 0) {
+                    if (!(GameState.LoadedMenu.Map.Tiles[spreads[i].X][spreads[i].Y].From === this.ID)) {
+                        if (GameState.LoadedMenu.Map.Tiles[spreads[i].X][spreads[i].Y].State == 1 && this.Shielding == 0) {
                             trapOut = true;
                             continue;
                         }
@@ -77,7 +77,7 @@ class Robot extends Player {
                 let randomDirection = Math.floor(Math.random() * 4);
                 if (this.CanMove(randomDirection)) {
                     let location = this.AddDirection(locationX, locationY, randomDirection);
-                    if (!(!(GameState.Map.Tiles[location[0]][location[1]].From === this.ID) && GameState.Map.Tiles[location[0]][location[1]].State == 1)) {
+                    if (!(!(GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].From === this.ID) && GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].State == 1)) {
                         let playerThere = GameState.PlayerAt(this.ID, location[0], location[1], 20);
                         if ((this.Shielding != 0 && playerThere) || !playerThere) {
                             this.MovingIn(randomDirection);

@@ -30,11 +30,11 @@
 
         if (GameState.KeyStates[this.Keys[4]] === false && this.PowerPress <= 3 && this.PowerPress >= 1 && this.Points >= 20) {
             this.Points -= 20;
-            if (GameState.Map.Tiles[this.PowerX][this.PowerY].From === this.ID) {
-                GameState.Map.PlaceTrap(this.PowerX, this.PowerY);
+            if (GameState.LoadedMenu.Map.Tiles[this.PowerX][this.PowerY].From === this.ID) {
+                GameState.LoadedMenu.Map.PlaceTrap(this.PowerX, this.PowerY);
             } else {
-                GameState.Map.ColorTile(Math.round(this.X / 1000), Math.round(this.Y / 1000), this.ID);
-                GameState.Map.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000));
+                GameState.LoadedMenu.Map.ColorTile(Math.round(this.X / 1000), Math.round(this.Y / 1000), this.ID);
+                GameState.LoadedMenu.Map.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000));
             }
         }
 
@@ -135,22 +135,22 @@
                 if (locationX < 1) { return false; }
                 break;
             case 2:
-                if (locationY >= GameState.Map.Height - 1) { return false; }
+                if (locationY >= GameState.LoadedMenu.Map.Height - 1) { return false; }
                 break;
             case 3:
-                if (locationX >= GameState.Map.Width - 1) { return false; }
+                if (locationX >= GameState.LoadedMenu.Map.Width - 1) { return false; }
                 break;
         }
 
         switch (direction) {
             case 0:
-                return !GameState.Map.Walls[(locationY * 2 - 1) * GameState.Map.Width + locationX];
+                return !GameState.LoadedMenu.Map.Walls[(locationY * 2 - 1) * GameState.LoadedMenu.Map.Width + locationX];
             case 2:
-                return !GameState.Map.Walls[(locationY * 2 + 1) * GameState.Map.Width + locationX];
+                return !GameState.LoadedMenu.Map.Walls[(locationY * 2 + 1) * GameState.LoadedMenu.Map.Width + locationX];
             case 1:
-                return !GameState.Map.Walls[locationY * GameState.Map.Width * 2 + locationX];
+                return !GameState.LoadedMenu.Map.Walls[locationY * GameState.LoadedMenu.Map.Width * 2 + locationX];
             case 3:
-                return !GameState.Map.Walls[locationY * GameState.Map.Width * 2 + locationX + 1];
+                return !GameState.LoadedMenu.Map.Walls[locationY * GameState.LoadedMenu.Map.Width * 2 + locationX + 1];
         }
 
         return true;
@@ -174,20 +174,20 @@
         if (this.MotionX > 0) {
             this.MotionX -= 200;
             this.X -= 200;
-            GameState.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, 1, Math.random() * 0.8 - 0.4, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.Map.TileSize / 2.5 + Math.random() * 0.8));
+            GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, 1, Math.random() * 0.8 - 0.4, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         } else if (this.MotionX < 0) {
             this.MotionX += 200;
             this.X += 200;
-            GameState.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, -1, Math.random() * 0.8 - 0.4, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.Map.TileSize / 2.5 + Math.random() * 0.8));
+            GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, -1, Math.random() * 0.8 - 0.4, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         }
         if (this.MotionY > 0) {
             this.MotionY -= 200;
             this.Y -= 200;
-            GameState.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.random() * 0.8 - 0.4, 1, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.Map.TileSize / 2.5 + Math.random() * 0.8));
+            GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.random() * 0.8 - 0.4, 1, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         } else if (this.MotionY < 0) {
             this.MotionY += 200;
             this.Y += 200;
-            GameState.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.random() * 0.8 - 0.4, -1, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.Map.TileSize / 2.5 + Math.random() * 0.8));
+            GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.random() * 0.8 - 0.4, -1, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         }
 
         if (this.Rotation > 0) {
@@ -206,8 +206,8 @@
 
         //Points
         if (this.Moving()) {
-            if (!(GameState.Map.Tiles[locationX][locationY].From === this.ID)) {
-                GameState.Map.ColorTile(locationX,locationY,this.ID)
+            if (!(GameState.LoadedMenu.Map.Tiles[locationX][locationY].From === this.ID)) {
+                GameState.LoadedMenu.Map.ColorTile(locationX,locationY,this.ID)
                 this.AddMoving = 10000
                 this.Points += 1;
             }
@@ -246,9 +246,9 @@
     }
 
     Trapped(x, y) {
-        let tile = GameState.Map.Tiles[x][y];
+        let tile = GameState.LoadedMenu.Map.Tiles[x][y];
         if (!(tile.From === this.ID) && tile.State == 1) {
-            GameState.Map.Tiles[x][y].State = 0;  
+            GameState.LoadedMenu.Map.Tiles[x][y].State = 0;  
             for (let i = 0; i < 20; i++) {
                 let useColor = null;
                 if (i % 2 == 0) {
@@ -257,7 +257,7 @@
                     useColor = "#505050";
                 }
                 let direction = Math.random() * Math.PI * 2;
-                GameState.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.cos(direction) * (Math.random() * 1.5), Math.sin(direction) * (Math.random() * 1.5), 1 + Math.random() * 0.4, useColor, GameState.Map.TileSize / 4 + Math.random() * 2));
+                GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.cos(direction) * (Math.random() * 1.5), Math.sin(direction) * (Math.random() * 1.5), 1 + Math.random() * 0.4, useColor, GameState.LoadedMenu.Map.TileSize / 4 + Math.random() * 2));
             }
             if (this.Shielding == 0) {
                 let killerColor = GameState.GetColor(tile.From);
@@ -272,7 +272,7 @@
         this.Dead = true;
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
-        GameState.Particles.push(new DeathMarker(locationX, locationY, "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")", killer));
+        GameState.LoadedMenu.Particles.push(new DeathMarker(locationX, locationY, "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")", killer));
         for (let i = 0; i < 50; i++) {
             let useColor = null;
             if (i % 2 == 0) {
@@ -281,7 +281,7 @@
                 useColor = "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")";
             }
             let direction = Math.random() * Math.PI * 2;
-            GameState.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.cos(direction) * (Math.random() * 0.5 + 2.5), Math.sin(direction) * (Math.random() * 0.5 + 2.5), 0.2 + Math.random() * 0.2, useColor, GameState.Map.TileSize / 2.5 + Math.random() * 0.8));
+            GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.cos(direction) * (Math.random() * 0.5 + 2.5), Math.sin(direction) * (Math.random() * 0.5 + 2.5), 0.2 + Math.random() * 0.2, useColor, GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         }
     }
 
@@ -307,9 +307,9 @@
     Draw() {
         GameState.Canvas.fillStyle = this.ColorNow();
         GameState.Canvas.lineWidth = 2;
-        let playerSize = GameState.Map.TileSize / 1.5;
-        let middleX = GameState.MapOffsetX + 2 + (this.X / 1000) * GameState.Map.TileSize + GameState.Map.TileSize / 2;
-        let middleY = GameState.MapOffsetY + 2 + (this.Y / 1000) * GameState.Map.TileSize + GameState.Map.TileSize / 2;
+        let playerSize = GameState.LoadedMenu.Map.TileSize / 1.5;
+        let middleX = GameState.LoadedMenu.MapOffsetX + 2 + (this.X / 1000) * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
+        let middleY = GameState.LoadedMenu.MapOffsetY + 2 + (this.Y / 1000) * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
         GameState.Canvas.translate(middleX, middleY);
         GameState.Canvas.rotate(this.Rotation * Math.PI / 360000);
         GameState.Canvas.fillRect(playerSize / -2, playerSize / -2, playerSize, playerSize);

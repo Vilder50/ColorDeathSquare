@@ -170,8 +170,8 @@ class Map {
     }
 
     Draw() {
-        GameState.Canvas.putImageData(this.TileImage, GameState.MapOffsetX + 2, GameState.MapOffsetY + 2);
-        GameState.Canvas.drawImage(GameState.ExtraRawCanvas, 0, 0, this.TileSize * this.Width + 4, this.TileSize * this.Height + 4, GameState.MapOffsetX, GameState.MapOffsetY, this.TileSize * this.Width + 4, this.TileSize * this.Height + 4)
+        GameState.Canvas.putImageData(this.TileImage, GameState.LoadedMenu.MapOffsetX + 2, GameState.LoadedMenu.MapOffsetY + 2);
+        GameState.Canvas.drawImage(GameState.ExtraRawCanvas, 0, 0, this.TileSize * this.Width + 4, this.TileSize * this.Height + 4, GameState.LoadedMenu.MapOffsetX, GameState.LoadedMenu.MapOffsetY, this.TileSize * this.Width + 4, this.TileSize * this.Height + 4)
     }
 
     ColorTile(locationX, locationY, colorID) {
@@ -199,7 +199,7 @@ class Map {
 
     PlaceTrap(x, y) {
         this.Tiles[x][y].State = 1;
-        GameState.Particles.push(new TrapParticle(x, y));
+        GameState.LoadedMenu.Particles.push(new TrapParticle(x, y));
     }
 }
 

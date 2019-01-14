@@ -28,8 +28,8 @@
     Draw() {
         let size = this.Size - this.Size * Math.pow(this.TimePercent, 2);
         let movementLocation = Math.pow(1 - this.TimePercent, 2);
-        let middleX = GameState.MapOffsetX + 2 + Math.min(GameState.Map.Width * GameState.Map.TileSize - size,Math.max(size, (this.X + (this.EndX - this.EndX * movementLocation)) * GameState.Map.TileSize + GameState.Map.TileSize / 2));
-        let middleY = GameState.MapOffsetY + 2 + Math.min(GameState.Map.Height * GameState.Map.TileSize - size,Math.max(size,(this.Y + (this.EndY - this.EndY * movementLocation)) * GameState.Map.TileSize + GameState.Map.TileSize / 2));
+        let middleX = GameState.LoadedMenu.MapOffsetX + 2 + Math.min(GameState.LoadedMenu.Map.Width * GameState.LoadedMenu.Map.TileSize - size,Math.max(size, (this.X + (this.EndX - this.EndX * movementLocation)) * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2));
+        let middleY = GameState.LoadedMenu.MapOffsetY + 2 + Math.min(GameState.LoadedMenu.Map.Height * GameState.LoadedMenu.Map.TileSize - size,Math.max(size,(this.Y + (this.EndY - this.EndY * movementLocation)) * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2));
         GameState.Canvas.translate(middleX, middleY);
         GameState.Canvas.rotate(this.Rotation * Math.PI / 180);
         GameState.Canvas.fillStyle = this.Color;
@@ -51,16 +51,16 @@ class TrapParticle {
         if ((this.Unspawnable && this.Time > 500) || !this.Unspawnable) {
             this.Time -= 40;
         }
-        if (GameState.Map.Tiles[this.X][this.Y].State != 1) {
+        if (GameState.LoadedMenu.Map.Tiles[this.X][this.Y].State != 1) {
             return true;
         }
         return this.Time <= 0;
     }
 
     Draw() {
-        let size = GameState.Map.TileSize / 2 * Math.min(1, (5000 - this.Time) / 100) * (this.Time > 200 ? 1 : this.Time / 150);
-        let middleX = GameState.MapOffsetX + 2 + this.X * GameState.Map.TileSize + GameState.Map.TileSize / 2;
-        let middleY = GameState.MapOffsetY + 2 + this.Y * GameState.Map.TileSize + GameState.Map.TileSize / 2;
+        let size = GameState.LoadedMenu.Map.TileSize / 2 * Math.min(1, (5000 - this.Time) / 100) * (this.Time > 200 ? 1 : this.Time / 150);
+        let middleX = GameState.LoadedMenu.MapOffsetX + 2 + this.X * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
+        let middleY = GameState.LoadedMenu.MapOffsetY + 2 + this.Y * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
         GameState.Canvas.translate(middleX, middleY);
         GameState.Canvas.fillStyle = "#505050";
         GameState.Canvas.fillRect(size / -2, size / -2, size, size);
@@ -84,9 +84,9 @@ class DeathMarker {
     }
 
     Draw() {
-        let size = GameState.Map.TileSize / 4;
-        let middleX = GameState.MapOffsetX + 2 + this.X * GameState.Map.TileSize + GameState.Map.TileSize / 2;
-        let middleY = GameState.MapOffsetY + 2 + this.Y * GameState.Map.TileSize + GameState.Map.TileSize / 2;
+        let size = GameState.LoadedMenu.Map.TileSize / 4;
+        let middleX = GameState.LoadedMenu.MapOffsetX + 2 + this.X * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
+        let middleY = GameState.LoadedMenu.MapOffsetY + 2 + this.Y * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
         GameState.Canvas.translate(middleX, middleY);
         GameState.Canvas.strokeStyle = "#000000";
         if (this.Killer != undefined) {

@@ -5,7 +5,7 @@ var GameState;
 (function () {
     GameState = new State();
     GameState.RawCanvas = document.getElementById("ColorDeathSquare");
-    GameState.Canvas = document.getElementById("ColorDeathSquare").getContext("2d");
+    GameState.Canvas = GameState.RawCanvas.getContext("2d");
     GameState.ExtraRawCanvas = document.getElementById("ColorDeathSquareExtra");
     //GameState.Players.push(new Player(["w", "a", "s", "d", "r"], 0));
     GameState.Players.push(new Player(["ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight", " "], 0));
@@ -14,7 +14,7 @@ var GameState;
     //GameState.Players.push(new Player(["i", "j", "k", "l", "p"], 2));
     //GameState.Players.push(new Player(["t", "f", "g", "h", "u"], 3));
     GameState.Players.push(new Robot(3));
-    GameState.StartGame();
+    GameState.LoadedMenu.StartGame();
     GameState.Update();
     GameState.Draw();
 })();
@@ -30,9 +30,11 @@ function KeyUp(event) {
 }
 
 function MouseMove(event) {
-    var CanvasLocation = GameState.RawCanvas.getBoundingClientRect();
-    GameState.MouseX = Math.round((event.clientX - CanvasLocation.left) * 1280 / CanvasLocation.width);
-    GameState.MouseY = Math.round((event.clientY - CanvasLocation.top) * 720 / CanvasLocation.height);
+    if (GameState != undefined) {
+        var CanvasLocation = GameState.RawCanvas.getBoundingClientRect();
+        GameState.MouseX = Math.round((event.clientX - CanvasLocation.left) * 1280 / CanvasLocation.width);
+        GameState.MouseY = Math.round((event.clientY - CanvasLocation.top) * 720 / CanvasLocation.height);
+    }
 }
 
 function Clicked(event) {
