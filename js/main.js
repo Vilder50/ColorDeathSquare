@@ -2,9 +2,9 @@
 
 //Startup
 var GameState;
-var ResetTimer = 0;
 (function () {
     GameState = new State();
+    GameState.RawCanvas = document.getElementById("ColorDeathSquare");
     GameState.Canvas = document.getElementById("ColorDeathSquare").getContext("2d");
     GameState.ExtraRawCanvas = document.getElementById("ColorDeathSquareExtra");
     //GameState.Players.push(new Player(["w", "a", "s", "d", "r"], 0));
@@ -15,11 +15,11 @@ var ResetTimer = 0;
     //GameState.Players.push(new Player(["t", "f", "g", "h", "u"], 3));
     GameState.Players.push(new Robot(3));
     GameState.StartGame();
-    Tick();
-    Draw();
+    GameState.Update();
+    GameState.Draw();
 })();
 
-//Keys
+//HTML events
 function KeyPress(event) {
     //alert(event.key);
     GameState.KeyStates[event.key + ""] = true;
@@ -29,67 +29,12 @@ function KeyUp(event) {
     GameState.KeyStates[event.key + ""] = false;
 }
 
-//Game logic
-function Tick() {
-    setTimeout(Tick, 40);
-    let playersAlive = 0;
-    for (let i = 0; i < GameState.Players.length; i++) {
-        if (!GameState.Players[i].Dead) {
-            GameState.Players[i].Update();
-            playersAlive++;
-        }
-    }
-    for (let i = 0; i < GameState.Particles.length; i++) {
-        if (GameState.Particles[i].Update()) {
-            GameState.Particles.splice(i, 1);
-            i--;
-        }
-    }
-
-    if (playersAlive <= 1) {
-        if (ResetTimer == 0) {
-            for (let x = 0; x < GameState.Map.Width; x++) {
-                for (let y = 0; y < GameState.Map.Height; y++) {
-                    if (GameState.Map.Tiles[x][y].State == 1) {
-                        GameState.Particles.push(new TrapParticle(x, y,true));
-                    }
-                }
-            }
-        }
-        ResetTimer += 40;
-        if (ResetTimer >= 5000) {
-            GameState.StartGame();
-            ResetTimer = 0;
-        }
-    }
+function MouseMove(event) {
+    var CanvasLocation = GameState.RawCanvas.getBoundingClientRect();
+    GameState.MouseX = Math.round((event.clientX - CanvasLocation.left) * 1280 / CanvasLocation.width);
+    GameState.MouseY = Math.round((event.clientY - CanvasLocation.top) * 720 / CanvasLocation.height);
 }
 
-function Draw() {
-    setTimeout(Draw, 40);
-    GameState.Map.Draw();
-    for (let i = 0; i < GameState.Particles.length; i++) {
-        GameState.Particles[i].Draw();
-    }
-    for (let i = 0; i < GameState.Players.length; i++) {
-        if (!GameState.Players[i].Dead) {
-            GameState.Players[i].Draw();
-        }
-    }
-}
-
-function GetColor(colorID) {
-    switch (colorID) {
-        case 0:
-            return [255, 0, 0];
-        case 1:
-            return [0, 255, 0];
-        case 2:
-            return [0, 0, 255];
-        case 3:
-            return [255, 255, 0];
-        case 4:
-            return [0, 255, 255];
-        case 5:
-            return [255, 0, 255];
-    }
+function Clicked(event) {
+    GameState.Clicked();
 }

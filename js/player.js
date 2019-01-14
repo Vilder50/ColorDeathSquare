@@ -1,7 +1,7 @@
 ﻿class Player {
     constructor(keys, id) {
         this.Keys = keys;
-        this.Color = GetColor(id);
+        this.Color = GameState.GetColor(id);
         this.ID = id;
         this.X = 0;
         this.Y = 0;
@@ -260,7 +260,7 @@
                 GameState.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.cos(direction) * (Math.random() * 1.5), Math.sin(direction) * (Math.random() * 1.5), 1 + Math.random() * 0.4, useColor, GameState.Map.TileSize / 4 + Math.random() * 2));
             }
             if (this.Shielding == 0) {
-                let killerColor = GetColor(tile.From);
+                let killerColor = GameState.GetColor(tile.From);
                 this.Kill("rgb(" + killerColor[0] + "," + killerColor[1] + "," + killerColor[2] + ")");
                 return true;
             }

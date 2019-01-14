@@ -3,6 +3,7 @@
 class State {
     constructor() {
         this.Canvas = null;
+        this.RawCanvas = null;
         this.ExtraRawCanvas = null;
         this.Map = null;
 
@@ -13,6 +14,9 @@ class State {
         this.MapOffsetY = 0;
         this.FrameUpdate = 0;
         this.State = 0;
+        this.MouseX = 0;
+        this.MouseY = 0;
+        this.ResetTimer = 0;
     }
 
     StartGame() {
@@ -50,5 +54,75 @@ class State {
         }
 
         return false;
+    }
+
+    GetColor(colorID) {
+        switch (colorID) {
+            case 0:
+                return [255, 0, 0];
+            case 1:
+                return [0, 255, 0];
+            case 2:
+                return [0, 0, 255];
+            case 3:
+                return [255, 255, 0];
+            case 4:
+                return [0, 255, 255];
+            case 5:
+                return [255, 0, 255];
+        }
+    }
+
+    Update() {
+        setTimeout(GameState.Update, 50);
+        let playersAlive = 0;
+        for (let i = 0; i < GameState.Players.length; i++) {
+            if (!GameState.Players[i].Dead) {
+                GameState.Players[i].Update();
+                playersAlive++;
+            }
+        }
+        for (let i = 0; i < GameState.Particles.length; i++) {
+            if (GameState.Particles[i].Update()) {
+                GameState.Particles.splice(i, 1);
+                i--;
+            }
+        }
+
+        if (playersAlive <= 1) {
+            if (ResetTimer == 0) {
+                for (let x = 0; x < GameState.Map.Width; x++) {
+                    for (let y = 0; y < GameState.Map.Height; y++) {
+                        if (GameState.Map.Tiles[x][y].State == 1) {
+                            GameState.Particles.push(new TrapParticle(x, y, true));
+                        }
+                    }
+                }
+            }
+            ResetTimer += 40;
+            if (ResetTimer >= 5000) {
+                GameState.StartGame();
+                ResetTimer = 0;
+            }
+        }
+    }
+
+    Clicked() {
+        //alert(this.MouseX + "," + this.MouseY);
+    }
+
+    Draw() {
+        setTimeout(GameState.Draw, 40);
+
+        GameState.Map.Draw();
+        for (let i = 0; i < GameState.Particles.length; i++) {
+            GameState.Particles[i].Draw();
+        }
+        for (let i = 0; i < GameState.Players.length; i++) {
+            if (!GameState.Players[i].Dead) {
+                GameState.Players[i].Draw();
+            }
+        }
+
     }
 }
