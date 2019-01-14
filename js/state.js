@@ -10,7 +10,7 @@ class State {
         this.KeyStates = [];
         this.MouseX = 0;
         this.MouseY = 0;
-        this.LoadedMenu = new GameMenu();
+        this.LoadedMenu = new MainMenu();
     }
 
 
@@ -50,11 +50,11 @@ class State {
         setTimeout(GameState.Update, 50);
     }
     UpdateNow() {
-        this.LoadedMenu.Update();
+        this.LoadedMenu.Update(this.MouseX, this.MouseY);
     }
 
     Clicked() {
-        //alert(this.MouseX + "," + this.MouseY);
+        this.LoadedMenu.Click(this.MouseX, this.MouseY);
     }
 
     Draw() {
@@ -62,6 +62,6 @@ class State {
         setTimeout(GameState.Draw, 40);
     }
     DrawNow() {
-        this.LoadedMenu.Draw();
+        this.LoadedMenu.Draw(this.MouseX, this.MouseY);
     }
 }

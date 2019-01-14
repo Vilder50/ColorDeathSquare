@@ -14,7 +14,6 @@ var GameState;
     //GameState.Players.push(new Player(["i", "j", "k", "l", "p"], 2));
     //GameState.Players.push(new Player(["t", "f", "g", "h", "u"], 3));
     GameState.Players.push(new Robot(3));
-    GameState.LoadedMenu.StartGame();
     GameState.Update();
     GameState.Draw();
 })();

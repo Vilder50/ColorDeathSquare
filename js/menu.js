@@ -12,18 +12,18 @@ class Button {
     }
 
     Hovering(x, y) {
-        return (this.X <= x && this.X + this.Width > x && this.Y <= y && this.Y + this.Height > Y);
+        return (this.X <= x && this.X + this.Width > x && this.Y <= y && this.Y + this.Height > y);
     }
 
     Draw() {
         GameState.Canvas.fillStyle = this.Hover ? this.HoverColor : this.Color;
         GameState.Canvas.fillRect(this.X, this.Y, this.Width, this.Height);
-        GameState.Canvas.lineWidth = 2;
-        GameState.Canvas.strokeRect(this.X, this.Y, this.Width, this.Height);
+        GameState.Canvas.lineWidth = 4;
+        GameState.Canvas.strokeRect(this.X, this.Y, this.Width - 2, this.Height - 2);
         GameState.Canvas.font = "20px Arial";
         GameState.Canvas.fillStyle = "#000000";
         GameState.Canvas.textAlign = "center";
-        GameState.Canvas.fillText(this.Text, this.X + this.Width / 2, this.Y + this.Height / 2);
+        GameState.Canvas.fillText(this.Text, this.X + this.Width / 2, this.Y + this.Height / 2 + 5);
     }
 }
 
@@ -44,15 +44,43 @@ class Menu {
 
     }
 
-    Update() {
+    Update(x,y) {
         for (let i = 0; i < this.Buttons.length; i++) {
             this.Buttons[i].Hover = (this.Buttons[i].Hovering(x, y));
         }
+
+        this.UpdateExtra();
+    }
+
+    UpdateExtra() {
+
     }
 
     Draw() {
         for (let i = 0; i < this.Buttons.length; i++) {
             this.Buttons[i].Draw();
+        }
+
+        this.DrawExtra();
+    }
+
+    DrawExtra() {
+
+    }
+}
+
+class MainMenu extends Menu {
+    constructor() {
+        super();
+
+        this.Buttons = [new Button(500, 30, 200, 70, "#00ff00", "#aaffaa", "To the game", 1)]
+    }
+
+    ClickedButton(id) {
+        switch (id) {
+            case 1:
+                GameState.LoadedMenu = new GameMenu();
+                break;
         }
     }
 }
@@ -66,6 +94,16 @@ class GameMenu extends Menu {
         this.MapOffsetX = 0;
         this.MapOffsetY = 0;
         this.ResetTimer = 0;
+        this.Buttons = [new Button(1180, 30, 70, 70, "#ff0000", "#ffaaaa", "Menu", 1)];
+        this.StartGame();
+    }
+
+    ClickedButton(id) {
+        switch (id) {
+            case 1:
+                GameState.LoadedMenu = new MainMenu();
+                break;
+        }
     }
 
     StartGame() {
@@ -90,8 +128,7 @@ class GameMenu extends Menu {
         }
     }
 
-    Update() {
-        //super.Update();
+    UpdateExtra() {
         let playersAlive = 0;
         for (let i = 0; i < GameState.Players.length; i++) {
             if (!GameState.Players[i].Dead) {
@@ -124,7 +161,7 @@ class GameMenu extends Menu {
         }
     }
 
-    Draw() {
+    DrawExtra() {
         this.Map.Draw();
         for (let i = 0; i < this.Particles.length; i++) {
             this.Particles[i].Draw();
@@ -134,7 +171,5 @@ class GameMenu extends Menu {
                 GameState.Players[i].Draw();
             }
         }
-
-        //super.Draw();
     }
 }
