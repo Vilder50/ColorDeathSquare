@@ -39,7 +39,7 @@ class State {
             case 3:
                 return [255, 255, 0];
             case 4:
-                return [0, 255, 255];
+                return [255, 127, 0];
             case 5:
                 return [255, 0, 255];
         }
