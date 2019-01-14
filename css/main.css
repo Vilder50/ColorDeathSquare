@@ -29,9 +29,14 @@ main {
 
 #ColorDeathSquare {
     height: 80vh;
+    display: block;
+    margin: 0 auto;
+}
+
+#ColorDeathSquareExtra{
+    display: none;
 }
 /*Game*/
-
 /*Footer*/
 footer {
     height: 15vh;
