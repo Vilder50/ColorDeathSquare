@@ -43,7 +43,7 @@ class TrapParticle {
     constructor(x, y, unspawnable) {
         this.X = x;
         this.Y = y;
-        this.Time = 1500;
+        this.Time = 5000;
         this.Unspawnable = unspawnable;
     }
 
@@ -58,7 +58,7 @@ class TrapParticle {
     }
 
     Draw() {
-        let size = GameState.Map.TileSize / 2 * Math.min(1, (1500 - this.Time) / 100) * (this.Time > 200 ? 1 : this.Time / 150);
+        let size = GameState.Map.TileSize / 2 * Math.min(1, (5000 - this.Time) / 100) * (this.Time > 200 ? 1 : this.Time / 150);
         let middleX = GameState.MapOffsetX + 2 + this.X * GameState.Map.TileSize + GameState.Map.TileSize / 2;
         let middleY = GameState.MapOffsetY + 2 + this.Y * GameState.Map.TileSize + GameState.Map.TileSize / 2;
         GameState.Canvas.translate(middleX, middleY);
