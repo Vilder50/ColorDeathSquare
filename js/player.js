@@ -40,7 +40,7 @@
 
         if (this.PowerPress == 4 && this.Points >= 30 && this.Shielding == 0) {
             this.Points -= 30;
-            this.Shielding = 4000;
+            this.Shielding = 3000;
         }
 
         if (this.PowerPress == 4) {

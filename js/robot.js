@@ -71,7 +71,7 @@ class Robot extends Player {
             if (distance > 10) {
                 if (trapOut && this.Points >= 30) {
                     this.Points -= 30;
-                    this.Shielding = 4000;
+                    this.Shielding = 3000;
                     return;
                 }
                 let randomDirection = Math.floor(Math.random() * 4);
