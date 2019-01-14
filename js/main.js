@@ -87,5 +87,9 @@ function GetColor(colorID) {
             return [0, 0, 255];
         case 3:
             return [255, 255, 0];
+        case 4:
+            return [0, 255, 255];
+        case 5:
+            return [255, 0, 255];
     }
 }
