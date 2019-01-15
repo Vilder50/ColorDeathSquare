@@ -391,13 +391,6 @@ class GameMenu extends Menu {
     }
 
     UpdateExtra() {
-        let playersAlive = 0;
-        for (let i = 0; i < GameState.Players.length; i++) {
-            if (!GameState.Players[i].Dead) {
-                GameState.Players[i].Update();
-                playersAlive++;
-            }
-        }
         for (let i = 0; i < this.Particles.length; i++) {
             if (this.Particles[i].Update()) {
                 this.Particles.splice(i, 1);
@@ -405,7 +398,19 @@ class GameMenu extends Menu {
             }
         }
 
-        if (playersAlive <= 1) {
+        let teamsAlive = 0;
+        let teams = [];
+        for (let i = 0; i < GameState.Players.length; i++) {
+            if (!GameState.Players[i].Dead) {
+                GameState.Players[i].Update();
+                if (!teams.includes(GameState.Players[i].ID)) {
+                    teamsAlive++;
+                    teams.push(GameState.Players[i].ID);
+                }
+            }
+        }
+
+        if (teamsAlive <= 1) {
             if (this.ResetTimer == 0) {
                 for (let x = 0; x < this.Map.Width; x++) {
                     for (let y = 0; y < this.Map.Height; y++) {
