@@ -49,7 +49,7 @@ class Robot extends Player {
             while (possibleDirection.length == 0 && distance <= 10) {
                 distance++;
                 for (let i = 0; i < spreads.length; i++) {
-                    if (this.Shielding == 0 && GameState.PlayerAt(this.ID, spreads[i].X, spreads[i].Y, 20,false)) {
+                    if (this.Shielding == 0 && (this.NotMoving <= 2000 || GameState.PlayerAt(this.ID, spreads[i].X, spreads[i].Y, 20, false))) {
                         trapOut = true;
                         continue;
                     }
