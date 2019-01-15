@@ -96,7 +96,7 @@ class MainMenu extends Menu {
     constructor() {
         super();
 
-        this.Buttons = [new Button(80, 560, 160, 80, "#00ff00", "#aaffaa", "Play", 1), new Button(320, 560, 160, 80, "#ffff00", "#ffffaa", "Players", 2), new Button(800, 560, 160, 80, "#00ffff", "#aaffff", "Help", 3), new Button(1040, 560, 160, 80, "#ff0000", "#ffaaaa", "Settings", 4)];
+        this.Buttons = [new Button(480, 400, 320, 80, "#00ff00", "#aaffaa", "Play", 1), new Button(560, 560, 160, 80, "#ffff00", "#ffffaa", "Players", 2), new Button(80, 560, 160, 80, "#ff0000", "#ffaaaa", "Settings", 4), new Button(1040, 560, 160, 80, "#00ffff", "#aaffff", "Help", 3)];
 
         this.DrawBasicMenuBackground();
     }
