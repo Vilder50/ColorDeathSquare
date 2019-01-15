@@ -19,7 +19,7 @@ class Button {
         GameState.Canvas.fillStyle = this.Hover ? this.HoverColor : this.Color;
         GameState.Canvas.fillRect(this.X, this.Y, this.Width, this.Height);
         GameState.Canvas.lineWidth = 4;
-        GameState.Canvas.strokeRect(this.X, this.Y, this.Width - 2, this.Height - 2);
+        GameState.Canvas.strokeRect(this.X + 2, this.Y + 2, this.Width - 4, this.Height - 4);
         GameState.Canvas.font = "20px Arial";
         GameState.Canvas.fillStyle = "#000000";
         GameState.Canvas.textAlign = "center";
@@ -29,6 +29,7 @@ class Button {
 
 class Menu {
     constructor() {
+        GameState.Canvas.clearRect(0, 0, 1280, 720);
         this.Buttons = [];
     }
 
@@ -36,8 +37,10 @@ class Menu {
         for (let i = 0; i < this.Buttons.length; i++) {
             if (this.Buttons[i].Hovering(x, y)) {
                 this.ClickedButton(this.Buttons[i].ID);
+                return;
             }
         }
+        this.ClickedButton(-1);
     }
 
     ClickedButton(id) {
@@ -57,15 +60,35 @@ class Menu {
     }
 
     Draw() {
+        this.DrawExtra();
+
         for (let i = 0; i < this.Buttons.length; i++) {
             this.Buttons[i].Draw();
         }
-
-        this.DrawExtra();
     }
 
     DrawExtra() {
 
+    }
+
+    DrawBasicMenuBackground() {
+        this.DrawPartBasicMenuBackground(0,0,16,9);
+    }
+
+    DrawPartBasicMenuBackground(startX, startY, endX, endY) {
+        for (let x = startX; x < endX; x++) {
+            for (let y = startY; y < endY; y++) {
+                if ((y + x) % 2 == 0) {
+                    GameState.Canvas.fillStyle = "#dddddd";
+                }
+                else {
+                    GameState.Canvas.fillStyle = "#ffffff";
+                }
+                GameState.Canvas.fillRect(x * 80, y * 80, 80, 80);
+            }
+        }
+        GameState.Canvas.lineWidth = 4;
+        GameState.Canvas.strokeRect(2, 2, GameState.RawCanvas.width - 4, GameState.RawCanvas.height - 4);
     }
 }
 
@@ -73,7 +96,9 @@ class MainMenu extends Menu {
     constructor() {
         super();
 
-        this.Buttons = [new Button(500, 30, 200, 70, "#00ff00", "#aaffaa", "To the game", 1)]
+        this.Buttons = [new Button(80, 560, 160, 80, "#00ff00", "#aaffaa", "Play", 1), new Button(320, 560, 160, 80, "#ffff00", "#ffffaa", "Players", 2), new Button(800, 560, 160, 80, "#00ffff", "#aaffff", "Help", 3), new Button(1040, 560, 160, 80, "#ff0000", "#ffaaaa", "Settings", 4)];
+
+        this.DrawBasicMenuBackground();
     }
 
     ClickedButton(id) {
@@ -81,6 +106,243 @@ class MainMenu extends Menu {
             case 1:
                 GameState.LoadedMenu = new GameMenu();
                 break;
+            case 2:
+                GameState.LoadedMenu = new PlayerScreen();
+                break;
+        }
+    }
+}
+
+class PlayerScreen extends Menu {
+    constructor() {
+        super();
+
+        this.SelectedPlayer = -1;
+        this.SelectedButton = -1;
+
+        this.LoadButtons();
+        this.DrawBasicMenuBackground();
+        this.RemvoingPlayer = false;
+    }
+
+    ClickedButton(id) {
+        switch (id) {
+            case -1:
+                this.DrawPartBasicMenuBackground(1, 3, 14, 6);
+                this.SelectedPlayer = -1;
+                this.SelectedButton = -1;
+                this.RemvoingPlayer = false;
+                this.LoadButtons();
+                break;
+            case 1:
+                GameState.LoadedMenu = new MainMenu();
+                break;
+            case 2:
+                if (this.SelectedPlayer == -1) {
+                    this.RemvoingPlayer = !this.RemvoingPlayer;
+                    this.Buttons[1].Text = this.RemvoingPlayer ? "Removing..." : "Remove Player";
+                } else {
+                    GameState.Players.splice(this.SelectedPlayer, 1);
+                    this.DrawPartBasicMenuBackground(1, 1, 14, 6);
+                    this.SelectedPlayer = -1;
+                    this.SelectedButton = -1;
+                    this.LoadButtons();
+                }
+                break;
+            case 3:
+                GameState.Players.push(new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "],this.GetAddingID()));
+                this.LoadButtons();
+                break;
+            case 4:
+                GameState.Players.push(new Robot(this.GetAddingID()));
+                this.LoadButtons();
+                break;
+            default:
+                if (id >= 100) {
+                    let playerLocation = id - 100;
+                    if (this.RemvoingPlayer) {
+                        GameState.Players.splice(playerLocation, 1);
+                        this.DrawPartBasicMenuBackground(1, 1, 14, 2);
+                        this.RemvoingPlayer = false;
+                        this.LoadButtons();
+                    } else {
+                        this.SelectedPlayer = playerLocation;
+                        this.SelectedButton = -1;
+                        this.LoadButtons();
+                    }
+                    break;
+                }
+
+                if (id >= 5 && id <= 10) {
+                    GameState.Players[this.SelectedPlayer].ID = id - 5;
+                    GameState.Players[this.SelectedPlayer].Color = GameState.GetColor(GameState.Players[this.SelectedPlayer].ID);
+                    this.LoadButtons();
+                    break;
+                }
+                if (id >= 11 && id <= 15) {
+                    this.SelectedButton = id - 11;
+                    this.LoadButtons();
+                    break;
+                }
+                break;
+        }
+    }
+
+    LoadButtons() {
+        this.Buttons = [new Button(80, 560, 160, 80, "#00ff00", "#aaffaa", "Menu", 1)];
+
+        if (GameState.Players.length > 1) {
+            this.Buttons.push(new Button(320, 560, 160, 80, "#ff0000", "#ffaaaa", "Remove Player", 2));
+        } else {
+            this.DrawPartBasicMenuBackground(4, 7, 6, 8);
+        }
+
+        if (GameState.Players.length < 6) {
+            this.Buttons.push(new Button(800, 560, 160, 80, "#ffff00", "#ffffaa", "Add Player", 3));
+            this.Buttons.push(new Button(1040, 560, 160, 80, "#ff00ff", "#ffaaff", "Add Robot", 4));
+        } else {
+            this.DrawPartBasicMenuBackground(10,7,15,8);
+        }
+
+        for (let i = 0; i < GameState.Players.length; i++) {
+            let color = GameState.GetColor(GameState.Players[i].ID);
+            let hoverColor = GameState.GetColor(GameState.Players[i].ID);
+            for (let j = 0; j < 3; j++) {
+                hoverColor[j] = hoverColor[j] + (255 - hoverColor[j]) * 0.5;
+            }
+            this.Buttons.push(new Button(160 + i * 160 + Math.floor(i / 3) * 80, 80, 80, 80, "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")", "rgb(" + hoverColor[0] + "," + hoverColor[1] + "," + hoverColor[2] + ")", (GameState.Players[i] instanceof Robot) ? "[*_*]" : "(o_o)", 100 + i));
+        }
+
+        if (this.SelectedPlayer != -1) {
+            for (let i = 0; i < 6; i++) {
+                let color = GameState.GetColor(i);
+                let hoverColor = color.slice();
+                for (let j = 0; j < 3; j++) {
+                    hoverColor[j] = hoverColor[j] + (255 - hoverColor[j]) * 0.5;
+                }
+                this.Buttons.push(new Button(330 + (i % 2) * 80, 250 + Math.floor(i / 2) * 80, 60, 60, "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")", "rgb(" + hoverColor[0] + "," + hoverColor[1] + "," + hoverColor[2] + ")", "", 5 + i));
+            }
+            let player = GameState.Players[this.SelectedPlayer];
+
+            if (!(player instanceof Robot)) {
+                this.Buttons.push(new Button(800, 330, 60, 60, this.SelectedButton == 0 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[0]), 11));
+                for (let i = 0; i < 3; i++) {
+                    this.Buttons.push(new Button(720 + i * 80, 410, 60, 60, this.SelectedButton == 1 + i ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[i+1]), 12 + i));
+                }
+                this.Buttons.push(new Button(560, 410, 140, 60, this.SelectedButton == 4 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[4]), 15));
+            }
+        }
+    }
+
+    GetAddingID() {
+        let foundNumber = false;
+        for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < GameState.Players.length; j++) {
+                if (GameState.Players[j].ID == i) {
+                    foundNumber = false;
+                    break;
+                }
+                foundNumber = true;
+            }
+
+            if (foundNumber) {
+                return i;
+            }
+        }
+        return 6;
+    }
+
+    KeyText(text) {
+        text = text.toUpperCase();
+        switch (text) {
+            case "ARROWUP":
+                return "^"
+                break;
+            case "ARROWRIGHT":
+                return ">"
+                break;
+            case "ARROWLEFT":
+                return "<"
+                break;
+            case "ARROWDOWN":
+                return "V"
+                break;
+            case " ":
+                return "[S]"
+                break;
+            case "ENTER":
+                return "[E]"
+                break;
+            case "BACKSPACE":
+                return "[B]"
+                break;
+            case "CONTROL":
+                return "[C]"
+                break;
+            case "CAPSLOCK":
+                return "[CL]"
+                break;
+            case "CAPSLOCK":
+                return "[CL]"
+                break;
+            case "ESCAPE":
+                return "[E]"
+                break;
+            case "META":
+                return "[M]"
+                break;
+            case "CONTEXTMENU":
+                return "[CM]"
+                break;
+            case "DELETE":
+                return "[D]"
+                break;
+            case "INSERT":
+                return "[I]"
+                break;
+            case "PAGEUP":
+                return "[PU]"
+                break;
+            case "PAGEDOWN":
+                return "[PD]"
+                break;
+            case "NUMLOCK":
+                return "[NL]"
+                break;
+            case "SCROLLLOCK":
+                return "[SL]"
+                break;
+            case "PAUSE":
+                return "[P]"
+                break;
+        }
+        return text;
+    }
+
+    DrawExtra() {
+        if (this.SelectedPlayer != -1) {
+            let color = GameState.GetColor(GameState.Players[this.SelectedPlayer].ID);
+            GameState.Canvas.fillStyle = "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
+            GameState.Canvas.fillRect(320, 240, 640, 240);
+            GameState.Canvas.lineWidth = 4;
+            GameState.Canvas.strokeRect(322, 242, 636, 236);
+        }
+    }
+
+    UpdateExtra() {
+        if (this.SelectedButton != -1) {
+            let size = 0;
+            let key;
+            for (key in GameState.KeyStates) {
+                if (GameState.KeyStates.hasOwnProperty(key)) {
+                    if (GameState.KeyStates[key]) {
+                        GameState.Players[this.SelectedPlayer].Keys[this.SelectedButton] = key;
+                        this.SelectedButton = -1;
+                        this.LoadButtons();
+                        return;
+                    }
+                }
+            }
         }
     }
 }

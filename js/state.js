@@ -10,9 +10,13 @@ class State {
         this.KeyStates = [];
         this.MouseX = 0;
         this.MouseY = 0;
-        this.LoadedMenu = new MainMenu();
+        this.LoadedMenu = null;
     }
 
+    Ready() {
+        this.Players = [new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0), new Robot(1), new Robot(2)];
+        this.LoadedMenu = new MainMenu();
+    }
 
     PlayerAt(thisID,x,y,power) {
         for (let j = 0; j < GameState.Players.length; j++) {
