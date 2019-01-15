@@ -2,6 +2,7 @@
 class Robot extends Player {
     constructor(id) {
         super([], id);
+        this.Difficulty = 4;
     }
 
     Power() {

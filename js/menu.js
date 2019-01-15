@@ -184,6 +184,11 @@ class PlayerScreen extends Menu {
                     this.LoadButtons();
                     break;
                 }
+                if (id >= 16 && id <= 20) {
+                    GameState.Players[this.SelectedPlayer].Difficulty = id - 16;
+                    this.LoadButtons();
+                    break;
+                }
                 break;
         }
     }
@@ -227,9 +232,13 @@ class PlayerScreen extends Menu {
             if (!(player instanceof Robot)) {
                 this.Buttons.push(new Button(800, 330, 60, 60, this.SelectedButton == 0 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[0]), 11));
                 for (let i = 0; i < 3; i++) {
-                    this.Buttons.push(new Button(720 + i * 80, 410, 60, 60, this.SelectedButton == 1 + i ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[i+1]), 12 + i));
+                    this.Buttons.push(new Button(720 + i * 80, 410, 60, 60, this.SelectedButton == 1 + i ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[i + 1]), 12 + i));
                 }
                 this.Buttons.push(new Button(560, 410, 140, 60, this.SelectedButton == 4 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[4]), 15));
+            } else {
+                for (let i = 0; i < 5; i++) {
+                    this.Buttons.push(new Button(560 + i * 80, 330, 70, 60, player.Difficulty == i ? "#dfdfdf" : "#909090", player.Difficulty == i ? "#ffffff" : "#dddddd", (i + 1), 16 + i));
+                }
             }
         }
     }
