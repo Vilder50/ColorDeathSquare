@@ -18,12 +18,12 @@ class State {
         this.LoadedMenu = new MainMenu();
     }
 
-    PlayerAt(thisID,x,y,power) {
+    PlayerAt(thisID,x,y,power,checkShield) {
         for (let j = 0; j < GameState.Players.length; j++) {
             if (GameState.Players[j].ID != thisID) {
                 let exactLocationX = Math.round(GameState.Players[j].X / 1000);
                 let exactLocationY = Math.round(GameState.Players[j].Y / 1000);
-                if (x == exactLocationX && y == exactLocationY && GameState.Players[j].Points >= power && !this.Players[j].Dead) {
+                if (x == exactLocationX && y == exactLocationY && GameState.Players[j].Points >= power && (GameState.Players[j].Shielding == 0 || !checkShield) && !this.Players[j].Dead) {
                     return true;
                 }
             }

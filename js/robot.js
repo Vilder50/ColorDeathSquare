@@ -5,10 +5,18 @@ class Robot extends Player {
     }
 
     Power() {
-        if (this.Points >= 40) {
+        let locationX = Math.round(this.X / 1000);
+        let locationY = Math.round(this.Y / 1000);
+        if (this.Points >= 20 && GameState.PlayerAt(this.ID, locationX, locationY, 0, true)) {
             this.Points -= 20;
-            GameState.LoadedMenu.Map.ColorTile(Math.round(this.X / 1000), Math.round(this.Y / 1000), this.ID);
-            GameState.LoadedMenu.Map.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000));
+            GameState.LoadedMenu.Map.ColorTile(locationX, locationY, this.ID);
+            GameState.LoadedMenu.Map.PlaceTrap(locationX, locationY);
+        }
+
+        if (this.Points >= 50) {
+            this.Points -= 20;
+            GameState.LoadedMenu.Map.ColorTile(locationX, locationY, this.ID);
+            GameState.LoadedMenu.Map.PlaceTrap(locationX, locationY);
         }
     }
 
@@ -41,7 +49,7 @@ class Robot extends Player {
             while (possibleDirection.length == 0 && distance <= 10) {
                 distance++;
                 for (let i = 0; i < spreads.length; i++) {
-                    if (this.Shielding == 0 && GameState.PlayerAt(this.ID, spreads[i].X, spreads[i].Y, 20)) {
+                    if (this.Shielding == 0 && GameState.PlayerAt(this.ID, spreads[i].X, spreads[i].Y, 20,false)) {
                         trapOut = true;
                         continue;
                     }
@@ -78,7 +86,7 @@ class Robot extends Player {
                 if (this.CanMove(randomDirection)) {
                     let location = this.AddDirection(locationX, locationY, randomDirection);
                     if (!(!(GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].From === this.ID) && GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].State == 1)) {
-                        let playerThere = GameState.PlayerAt(this.ID, location[0], location[1], 20);
+                        let playerThere = GameState.PlayerAt(this.ID, location[0], location[1], 20, false);
                         if ((this.Shielding != 0 && playerThere) || !playerThere) {
                             this.MovingIn(randomDirection);
                         }
