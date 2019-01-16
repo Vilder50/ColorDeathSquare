@@ -40,7 +40,6 @@ class Menu {
                 return;
             }
         }
-        this.ClickedButton(-1);
     }
 
     ClickedButton(id) {
@@ -127,13 +126,6 @@ class PlayerScreen extends Menu {
 
     ClickedButton(id) {
         switch (id) {
-            case -1:
-                this.DrawPartBasicMenuBackground(1, 3, 14, 6);
-                this.SelectedPlayer = -1;
-                this.SelectedButton = -1;
-                this.RemvoingPlayer = false;
-                this.LoadButtons();
-                break;
             case 1:
                 GameState.LoadedMenu = new MainMenu();
                 break;
