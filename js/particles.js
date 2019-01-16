@@ -89,6 +89,7 @@ class DeathMarker {
         let middleY = GameState.LoadedMenu.MapOffsetY + 2 + this.Y * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
         GameState.Canvas.translate(middleX, middleY);
         GameState.Canvas.strokeStyle = "#000000";
+        GameState.Canvas.lineWidth = 2;
         if (this.Killer != undefined) {
             GameState.Canvas.rotate(Math.PI / 4);
             GameState.Canvas.fillStyle = this.Killer;
@@ -98,7 +99,6 @@ class DeathMarker {
         }
         GameState.Canvas.fillStyle = this.Color;
         GameState.Canvas.fillRect(size / -2, size / -2, size, size);
-        GameState.Canvas.lineWidth = 2;
         GameState.Canvas.strokeRect(size / -2, size / -2, size, size);
         GameState.Canvas.setTransform(1, 0, 0, 1, 0, 0);
     }
