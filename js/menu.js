@@ -155,7 +155,6 @@ class PlayerScreen extends Menu {
                     if (this.RemvoingPlayer) {
                         GameState.Players.splice(playerLocation, 1);
                         this.DrawPartBasicMenuBackground(1, 1, 14, 2);
-                        this.RemvoingPlayer = false;
                         this.LoadButtons();
                     } else {
                         this.SelectedPlayer = playerLocation;
@@ -189,9 +188,10 @@ class PlayerScreen extends Menu {
         this.Buttons = [new Button(80, 560, 160, 80, "#00ff00", "#aaffaa", "Menu", 1)];
 
         if (GameState.Players.length > 1) {
-            this.Buttons.push(new Button(320, 560, 160, 80, "#ff0000", "#ffaaaa", "Remove Player", 2));
+            this.Buttons.push(new Button(320, 560, 160, 80, "#ff0000", "#ffaaaa", this.RemvoingPlayer ? "Removing..." : "Remove Player", 2));
         } else {
             this.DrawPartBasicMenuBackground(4, 7, 6, 8);
+            this.RemvoingPlayer = false;
         }
 
         if (GameState.Players.length < 6) {
