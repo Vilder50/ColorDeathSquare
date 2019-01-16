@@ -430,7 +430,7 @@ class GameMenu extends Menu {
                 }
             }
             this.ResetTimer += 40;
-            if (this.ResetTimer >= 5000) {
+            if (this.ResetTimer >= 2500) {
                 this.StartGame();
                 this.ResetTimer = 0;
             }
