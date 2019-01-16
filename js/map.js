@@ -200,6 +200,11 @@ class Map {
     PlaceTrap(x, y) {
         this.Tiles[x][y].State = 1;
         GameState.LoadedMenu.Particles.push(new TrapParticle(x, y));
+        for (let i = 0; i < GameState.Players.length; i++) {
+            if (GameState.Players[i] instanceof Robot) {
+                GameState.Players[i].RememberedTraps[x][y] = new TrappedLocation();
+            }
+        }
     }
 }
 

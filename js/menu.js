@@ -395,7 +395,16 @@ class GameMenu extends Menu {
             GameState.Players[i].X = Math.floor(Math.random() * width) * 1000;
             GameState.Players[i].Y = Math.floor(Math.random() * height) * 1000;
             GameState.Players[i].Reset();
-            this.Map.ColorTile(GameState.Players[i].X / 1000, GameState.Players[i].Y / 1000, GameState.Players[i].ID)
+            this.Map.ColorTile(GameState.Players[i].X / 1000, GameState.Players[i].Y / 1000, GameState.Players[i].ID);
+            if (GameState.Players[i] instanceof Robot) {
+                GameState.Players[i].RememberedTraps = [];
+                for (let x = 0; x < width; x++) {
+                    GameState.Players[i].RememberedTraps.push([]);
+                    for (let y = 0; y < height; y++) {
+                        GameState.Players[i].RememberedTraps[x].push(null);
+                    }
+                }
+            }
         }
     }
 
