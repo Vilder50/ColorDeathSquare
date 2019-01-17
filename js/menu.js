@@ -27,10 +27,39 @@ class Button {
     }
 }
 
+class Box {
+    constructor(x, y, width, height, color, text, center) {
+        this.X = x;
+        this.Y = y;
+        this.Width = width;
+        this.Height = height;
+        this.Color = color;
+        this.Text = text;
+        this.Center = center;
+    }
+
+    Draw() {
+        GameState.Canvas.fillStyle = this.Color;
+        GameState.Canvas.fillRect(this.X, this.Y, this.Width, this.Height);
+        GameState.Canvas.lineWidth = 4;
+        GameState.Canvas.strokeRect(this.X + 2, this.Y + 2, this.Width - 4, this.Height - 4);
+        GameState.Canvas.font = "20px Arial";
+        GameState.Canvas.fillStyle = "#000000";
+        if (this.Center) {
+            GameState.Canvas.textAlign = "center";
+            GameState.Canvas.fillText(this.Text, this.X + this.Width / 2, this.Y + this.Height / 2 + 5);
+        } else {
+            GameState.Canvas.textAlign = "start";
+            GameState.Canvas.fillText(this.Text, this.X + 30, this.Y + this.Height / 2 + 5);
+        }
+    }
+}
+
 class Menu {
     constructor() {
         GameState.Canvas.clearRect(0, 0, 1280, 720);
         this.Buttons = [];
+        this.Boxes = [];
     }
 
     Click(x,y) {
@@ -60,6 +89,10 @@ class Menu {
 
     Draw() {
         this.DrawExtra();
+
+        for (let i = 0; i < this.Boxes.length; i++) {
+            this.Boxes[i].Draw();
+        }
 
         for (let i = 0; i < this.Buttons.length; i++) {
             this.Buttons[i].Draw();
@@ -95,7 +128,7 @@ class MainMenu extends Menu {
     constructor() {
         super();
 
-        this.Buttons = [new Button(480, 400, 320, 80, "#00ff00", "#aaffaa", "Play", 1), new Button(560, 560, 160, 80, "#ffff00", "#ffffaa", "Players", 2), new Button(80, 560, 160, 80, "#ff0000", "#ffaaaa", "Settings", 4), new Button(1040, 560, 160, 80, "#00ffff", "#aaffff", "Help", 3)];
+        this.Buttons = [new Button(480, 400, 320, 80, "#00ff00", "#aaffaa", "Play", 1), new Button(560, 560, 160, 80, "#ffff00", "#ffffaa", "Players", 2), new Button(80, 560, 160, 80, "#ff0000", "#ffaaaa", "Options", 3), new Button(1040, 560, 160, 80, "#00ffff", "#aaffff", "Help", 4)];
 
         this.DrawBasicMenuBackground();
     }
@@ -107,6 +140,9 @@ class MainMenu extends Menu {
                 break;
             case 2:
                 GameState.LoadedMenu = new PlayerScreen();
+                break;
+            case 3:
+                GameState.LoadedMenu = new OptionMenu();
                 break;
         }
     }
@@ -447,6 +483,35 @@ class GameMenu extends Menu {
             if (!GameState.Players[i].Dead) {
                 GameState.Players[i].Draw();
             }
+        }
+    }
+}
+
+class OptionMenu extends Menu {
+    constructor() {
+        super();
+
+        this.LoadButtons();
+        this.DrawBasicMenuBackground();
+        this.Boxes = [new Box(480, 80, 720, 80, "#ff8000", "Map size:", false), new Box(480, 240, 720, 80, "#ff0000", "Wall display size:", false), new Box(480, 400, 720, 80, "#00ff00", "End if only robots are left:", false), new Box(480, 560, 720, 80, "#00ffff", "Traps visible for forever:", false)];
+    }
+
+    LoadButtons() {
+        this.Buttons = [new Button(80, 240, 240, 240, "#00ff00", "#aaffaa", "Menu", 1)];
+
+        for (let i = 0; i < 5; i++) {
+            this.Buttons.push(new Button(810 + i * 80, 90, 60, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", i + 1, 2 + i));
+            this.Buttons.push(new Button(810 + i * 80, 250, 60, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", i + 1, 7 + i));
+        }
+        this.Buttons.push(new Button(810, 410, 140, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", "ON", 12));
+        this.Buttons.push(new Button(1050, 410, 140, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", "OFF", 12));
+        this.Buttons.push(new Button(810, 570, 140, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", "ON", 12));
+        this.Buttons.push(new Button(1050, 570, 140, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", "OFF", 12));
+    }
+
+    ClickedButton(id) {
+        if (id == 1) {
+            GameState.LoadedMenu = new MainMenu();
         }
     }
 }
