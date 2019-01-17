@@ -178,10 +178,12 @@ class PlayerScreen extends Menu {
                 }
                 break;
             case 3:
+                this.RemvoingPlayer = false;
                 GameState.Players.push(new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "],this.GetAddingID()));
                 this.LoadButtons();
                 break;
             case 4:
+                this.RemvoingPlayer = false;
                 GameState.Players.push(new Robot(this.GetAddingID()));
                 this.LoadButtons();
                 break;
@@ -244,6 +246,8 @@ class PlayerScreen extends Menu {
         }
 
         if (this.SelectedPlayer != -1) {
+            this.Boxes = [new Box(320, 240, 640, 240, GameState.CreateColorString(GameState.GetColor(GameState.Players[this.SelectedPlayer].ID)), "", false)];
+
             for (let i = 0; i < 6; i++) {
                 let color = GameState.CreateColorString(GameState.GetColor(i));
                 let hoverColor = GameState.WhitenColor(GameState.GetColor(i), 0.7);
@@ -348,15 +352,6 @@ class PlayerScreen extends Menu {
                 break;
         }
         return text;
-    }
-
-    DrawExtra() {
-        if (this.SelectedPlayer != -1) {
-            GameState.Canvas.fillStyle = GameState.CreateColorString(GameState.GetColor(GameState.Players[this.SelectedPlayer].ID));
-            GameState.Canvas.fillRect(320, 240, 640, 240);
-            GameState.Canvas.lineWidth = 4;
-            GameState.Canvas.strokeRect(322, 242, 636, 236);
-        }
     }
 
     UpdateExtra() {
