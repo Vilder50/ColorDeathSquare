@@ -35,15 +35,15 @@ class State {
     GetColor(colorID) {
         switch (colorID) {
             case 0:
-                return [255, 0, 0];
+                return [0, 255, 255];
             case 1:
                 return [0, 255, 0];
             case 2:
-                return [0, 255, 255];
-            case 3:
                 return [255, 255, 0];
-            case 4:
+            case 3:
                 return [255, 127, 0];
+            case 4:
+                return [255, 0, 0];
             case 5:
                 return [255, 0, 255];
         }

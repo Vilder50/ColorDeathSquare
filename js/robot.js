@@ -2,7 +2,7 @@
 class Robot extends Player {
     constructor(id) {
         super([], id);
-        this.Difficulty = 4;
+        this.Difficulty = 2;
         this.MovementDelay = 0;
         this.RememberedTraps = [];
     }
