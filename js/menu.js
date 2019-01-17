@@ -400,7 +400,7 @@ class GameMenu extends Menu {
 
     StartGame() {
         GameState.Canvas.clearRect(0, 0, 1280, 720);
-        let totalSize = GameState.Players.length * 20;
+        let totalSize = GameState.Players.length * (GameState.MazeSizeOption + 1) * 7;
         let around = Math.round(Math.sqrt(totalSize));
         let randomness = Math.floor(around / 3);
         let width = around + Math.floor(Math.random() * randomness - randomness / 2);
@@ -439,6 +439,7 @@ class GameMenu extends Menu {
 
         let teamsAlive = 0;
         let teams = [];
+        let realPlayers = 0;
         for (let i = 0; i < GameState.Players.length; i++) {
             if (!GameState.Players[i].Dead) {
                 GameState.Players[i].Update();
@@ -446,15 +447,20 @@ class GameMenu extends Menu {
                     teamsAlive++;
                     teams.push(GameState.Players[i].ID);
                 }
+                if (!(GameState.Players[i] instanceof Robot)) {
+                    realPlayers++;
+                }
             }
         }
 
-        if (teamsAlive <= 1) {
+        if (teamsAlive <= 1 || (realPlayers == 0 && GameState.RobotOption)) {
             if (this.ResetTimer == 0) {
-                for (let x = 0; x < this.Map.Width; x++) {
-                    for (let y = 0; y < this.Map.Height; y++) {
-                        if (this.Map.Tiles[x][y].State == 1) {
-                            this.Particles.push(new TrapParticle(x, y, true));
+                if (!GameState.TrapOption) {
+                    for (let x = 0; x < this.Map.Width; x++) {
+                        for (let y = 0; y < this.Map.Height; y++) {
+                            if (this.Map.Tiles[x][y].State == 1) {
+                                this.Particles.push(new TrapParticle(x, y, true));
+                            }
                         }
                     }
                 }
@@ -510,7 +516,7 @@ class OptionMenu extends Menu {
             case 2:
                 GameState.MazeSizeOption = 2;
                 GameState.WallSizeOption = 1;
-                GameState.RobotOption = true;
+                GameState.RobotOption = false;
                 GameState.TrapOption = false;
                 this.LoadButtons();
                 break;

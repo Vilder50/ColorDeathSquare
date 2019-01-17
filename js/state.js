@@ -14,7 +14,7 @@ class State {
 
         this.MazeSizeOption = 2;
         this.WallSizeOption = 1;
-        this.RobotOption = true;
+        this.RobotOption = false;
         this.TrapOption = false;
     }
 

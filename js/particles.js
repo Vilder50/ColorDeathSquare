@@ -45,6 +45,10 @@ class TrapParticle {
         this.Y = y;
         this.Time = 5000;
         this.Unspawnable = unspawnable;
+
+        if (GameState.TrapOption) {
+            this.Unspawnable = true;
+        }
     }
 
     Update() {
