@@ -16,6 +16,8 @@ class State {
         this.WallSizeOption = 1;
         this.RobotOption = false;
         this.TrapOption = false;
+
+        this.Wins = [0, 0, 0, 0, 0, 0];
     }
 
     Ready() {

@@ -381,8 +381,12 @@ class GameMenu extends Menu {
         this.MapOffsetX = 0;
         this.MapOffsetY = 0;
         this.ResetTimer = 0;
-        this.Buttons = [new Button(1180, 30, 70, 70, "#ff0000", "#ffaaaa", "Menu", 1)];
+        this.Buttons = [new Button(0, 650, 70, 70, "#ff0000", "#ffaaaa", "Menu", 1)];
         this.StartGame();
+        this.Boxes = [];
+        for (let i = 0; i < 6; i++) {
+            this.Boxes.push(new Box(0, 0 + i * 80, 70, 70, GameState.CreateColorString(GameState.GetColor(i)), GameState.Wins[i].toString(), true));
+        }
     }
 
     ClickedButton(id) {
@@ -459,6 +463,11 @@ class GameMenu extends Menu {
                         }
                     }
                 }
+
+                if (teams.length >= 1) {
+                    GameState.Wins[teams[Math.floor(Math.random() * teams.length)]]++;
+                    this.UpdateWinScores();
+                }
             }
             this.ResetTimer += 40;
             if (this.ResetTimer >= 2500) {
@@ -477,6 +486,12 @@ class GameMenu extends Menu {
             if (!GameState.Players[i].Dead) {
                 GameState.Players[i].Draw();
             }
+        }
+    }
+
+    UpdateWinScores() {
+        for (let i = 0; i < 6; i++) {
+            this.Boxes[i].Text = GameState.Wins[i].toString();
         }
     }
 }
