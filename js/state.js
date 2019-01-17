@@ -11,6 +11,11 @@ class State {
         this.MouseX = 0;
         this.MouseY = 0;
         this.LoadedMenu = null;
+
+        this.MazeSizeOption = 2;
+        this.WallSizeOption = 1;
+        this.RobotOption = true;
+        this.TrapOption = false;
     }
 
     Ready() {

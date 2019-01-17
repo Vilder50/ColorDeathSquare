@@ -259,7 +259,7 @@ class PlayerScreen extends Menu {
                 this.Buttons.push(new Button(560, 410, 140, 60, this.SelectedButton == 4 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[4]), 15));
             } else {
                 for (let i = 0; i < 5; i++) {
-                    this.Buttons.push(new Button(560 + i * 80, 330, 70, 60, player.Difficulty == i ? "#dfdfdf" : "#909090", player.Difficulty == i ? "#ffffff" : "#dddddd", (i + 1), 16 + i));
+                    this.Buttons.push(new Button(560 + i * 80, 330, 70, 60, player.Difficulty == i ? GameState.CreateColorString(GameState.GetColor(i)) : "#909090", player.Difficulty == i ? GameState.WhitenColor(GameState.GetColor(i),0.7) : "#dddddd", (i + 1), 16 + i));
                 }
             }
         }
@@ -486,25 +486,73 @@ class OptionMenu extends Menu {
 
         this.LoadButtons();
         this.DrawBasicMenuBackground();
-        this.Boxes = [new Box(480, 80, 720, 80, "#ff8000", "Map size:", false), new Box(480, 240, 720, 80, "#ff0000", "Wall display size:", false), new Box(480, 400, 720, 80, "#00ff00", "End if only robots are left:", false), new Box(480, 560, 720, 80, "#00ffff", "Traps visible for forever:", false)];
+        this.Boxes = [new Box(480, 80, 720, 80, "#ff8000", "Map size:", false), new Box(480, 240, 720, 80, "#ff0000", "Wall display size:", false), new Box(480, 400, 720, 80, "#ffff00", "End if only robots are left:", false), new Box(480, 560, 720, 80, "#00ffff", "Traps visible for forever:", false)];
     }
 
     LoadButtons() {
-        this.Buttons = [new Button(80, 240, 240, 240, "#00ff00", "#aaffaa", "Menu", 1)];
+        this.Buttons = [new Button(80, 240, 240, 240, "#00ff00", "#aaffaa", "Menu", 1), new Button(80, 560, 240, 80, "#ff00ff", "#ffaaff", "Default", 2)];
 
         for (let i = 0; i < 5; i++) {
-            this.Buttons.push(new Button(810 + i * 80, 90, 60, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", i + 1, 2 + i));
-            this.Buttons.push(new Button(810 + i * 80, 250, 60, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", i + 1, 7 + i));
+            this.Buttons.push(new Button(810 + i * 80, 90, 60, 60, GameState.MazeSizeOption == i ? GameState.CreateColorString(GameState.GetColor(i)) : "#909090", GameState.MazeSizeOption == i ? GameState.WhitenColor(GameState.GetColor(i), 0.7) : "#dddddd", i + 1, 3 + i));
+            this.Buttons.push(new Button(810 + i * 80, 250, 60, 60, GameState.WallSizeOption == i ? GameState.CreateColorString(GameState.GetColor(i)) : "#909090", GameState.WallSizeOption == i ? GameState.WhitenColor(GameState.GetColor(i), 0.7) : "#dddddd", i + 1, 8 + i));
         }
-        this.Buttons.push(new Button(810, 410, 140, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", "ON", 12));
-        this.Buttons.push(new Button(1050, 410, 140, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", "OFF", 12));
-        this.Buttons.push(new Button(810, 570, 140, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", "ON", 12));
-        this.Buttons.push(new Button(1050, 570, 140, 60, false ? "#dfdfdf" : "#909090", false ? "#ffffff" : "#dddddd", "OFF", 12));
+        this.Buttons.push(new Button(810, 410, 140, 60, GameState.RobotOption ?  "#00ff00" : "#909090", GameState.RobotOption ? "#aaffaa" : "#dddddd", "ON", 13));
+        this.Buttons.push(new Button(1050, 410, 140, 60, !GameState.RobotOption ?  "#ff0000" : "#909090", !GameState.RobotOption ? "#ffaaaa" : "#dddddd", "OFF", 14));
+        this.Buttons.push(new Button(810, 570, 140, 60, GameState.TrapOption ? "#00ff00" : "#909090", GameState.TrapOption ? "#aaffaa" : "#dddddd", "ON", 15));
+        this.Buttons.push(new Button(1050, 570, 140, 60, !GameState.TrapOption ?  "#ff0000" : "#909090", !GameState.TrapOption ? "#ffaaaa" : "#dddddd", "OFF", 16));
     }
 
     ClickedButton(id) {
-        if (id == 1) {
-            GameState.LoadedMenu = new MainMenu();
-        }
+        switch (id) {
+            case 1:
+                GameState.LoadedMenu = new MainMenu();
+                break;
+            case 2:
+                GameState.MazeSizeOption = 2;
+                GameState.WallSizeOption = 1;
+                GameState.RobotOption = true;
+                GameState.TrapOption = false;
+                this.LoadButtons();
+                break;
+            case 13:
+                this.ChangeRobotOption(true);
+                break;
+            case 14:
+                this.ChangeRobotOption(false);
+                break;
+            case 15:
+                this.ChangeTrapOption(true);
+                break;
+            case 16:
+                this.ChangeTrapOption(false);
+                break;
+            default:
+                if (id >= 3 && id <= 7) {
+                    this.ChangeMazeSizeOption(id - 3);
+                } else if (id >= 8 && id <= 14) {
+                    this.ChangeWallSizeOption(id - 8);
+                }
+                break;
+       }
+    }
+
+    ChangeRobotOption(newState) {
+        GameState.RobotOption = newState;
+        this.LoadButtons();
+    }
+
+    ChangeTrapOption(newState) {
+        GameState.TrapOption = newState;
+        this.LoadButtons();
+    }
+
+    ChangeMazeSizeOption(newState) {
+        GameState.MazeSizeOption = newState;
+        this.LoadButtons();
+    }
+
+    ChangeWallSizeOption(newState) {
+        GameState.WallSizeOption = newState;
+        this.LoadButtons();
     }
 }
