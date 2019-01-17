@@ -260,8 +260,9 @@
                 GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.cos(direction) * (Math.random() * 1.5), Math.sin(direction) * (Math.random() * 1.5), 1 + Math.random() * 0.4, useColor, GameState.LoadedMenu.Map.TileSize / 4 + Math.random() * 2));
             }
             if (this.Shielding == 0) {
-                let killerColor = GameState.GetColor(tile.From);
-                this.Kill("rgb(" + killerColor[0] + "," + killerColor[1] + "," + killerColor[2] + ")");
+                GameState.Kills[tile.From]++;
+                GameState.LoadedMenu.UpdateKillScores();
+                this.Kill(GameState.CreateColorString(GameState.GetColor(tile.From)));
                 return true;
             }
         }

@@ -45,7 +45,10 @@ class Box {
         GameState.Canvas.strokeRect(this.X + 2, this.Y + 2, this.Width - 4, this.Height - 4);
         GameState.Canvas.font = "20px Arial";
         GameState.Canvas.fillStyle = "#000000";
-        if (this.Center) {
+        if (this.Center == "TopCenter") {
+            GameState.Canvas.textAlign = "center";
+            GameState.Canvas.fillText(this.Text, this.X + this.Width / 2, this.Y + 30);
+        } else if (this.Center) {
             GameState.Canvas.textAlign = "center";
             GameState.Canvas.fillText(this.Text, this.X + this.Width / 2, this.Y + this.Height / 2 + 5);
         } else {
@@ -381,11 +384,12 @@ class GameMenu extends Menu {
         this.MapOffsetX = 0;
         this.MapOffsetY = 0;
         this.ResetTimer = 0;
-        this.Buttons = [new Button(0, 650, 70, 70, "#ff0000", "#ffaaaa", "Menu", 1)];
+        this.Buttons = [new Button(40, 620, 80, 80, "#ff0000", "#ffaaaa", "Menu", 1), new Button(1160, 620, 80, 80, "#ff0000", "#ffaaaa", "Menu", 1)];
         this.StartGame();
-        this.Boxes = [];
+        this.Boxes = [new Box(0, 0, 160, 720, "#dddddd", "Wins", "TopCenter"), new Box(1120, 0, 160, 720, "#dddddd", "Kills", "TopCenter")];
         for (let i = 0; i < 6; i++) {
-            this.Boxes.push(new Box(0, 0 + i * 80, 70, 70, GameState.CreateColorString(GameState.GetColor(i)), GameState.Wins[i].toString(), true));
+            this.Boxes.push(new Box(40, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.Wins[i], true));
+            this.Boxes.push(new Box(1160, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.Kills[i], true));
         }
     }
 
@@ -465,7 +469,10 @@ class GameMenu extends Menu {
                 }
 
                 if (teams.length >= 1) {
-                    GameState.Wins[teams[Math.floor(Math.random() * teams.length)]]++;
+                    let winner = teams[Math.floor(Math.random() * teams.length)];
+                    GameState.Wins[winner]++;
+                    this.Boxes[0].Color = GameState.CreateColorString(GameState.GetColor(winner));
+                    this.Boxes[1].Color = this.Boxes[0].Color;
                     this.UpdateWinScores();
                 }
             }
@@ -491,7 +498,13 @@ class GameMenu extends Menu {
 
     UpdateWinScores() {
         for (let i = 0; i < 6; i++) {
-            this.Boxes[i].Text = GameState.Wins[i].toString();
+            this.Boxes[2 + i * 2].Text = GameState.Wins[i];
+        }
+    }
+
+    UpdateKillScores() {
+        for (let i = 0; i < 6; i++) {
+            this.Boxes[3 + i * 2].Text = GameState.Kills[i];
         }
     }
 }

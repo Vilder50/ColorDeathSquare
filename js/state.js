@@ -18,6 +18,7 @@ class State {
         this.TrapOption = false;
 
         this.Wins = [0, 0, 0, 0, 0, 0];
+        this.Kills = [0, 0, 0, 0, 0, 0];
     }
 
     Ready() {
