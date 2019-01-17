@@ -91,13 +91,13 @@ class Menu {
     }
 
     Draw() {
-        this.DrawExtra();
-
         for (let i = 0; i < this.Boxes.length; i++) {
             if (this.Boxes[i] != null) {
                 this.Boxes[i].Draw();
             }
         }
+
+        this.DrawExtra();
 
         for (let i = 0; i < this.Buttons.length; i++) {
             this.Buttons[i].Draw();
@@ -148,6 +148,9 @@ class MainMenu extends Menu {
                 break;
             case 3:
                 GameState.LoadedMenu = new OptionMenu();
+                break;
+            case 4:
+                GameState.LoadedMenu = new HelpMenu();
                 break;
         }
     }
@@ -603,5 +606,39 @@ class OptionMenu extends Menu {
     ChangeWallSizeOption(newState) {
         GameState.WallSizeOption = newState;
         this.LoadButtons();
+    }
+}
+
+class HelpMenu extends Menu {
+    constructor() {
+        super();
+
+        this.DrawBasicMenuBackground();
+        this.Buttons = [new Button(480, 560, 320, 80, "#00ff00", "#aaffaa", "Menu", 1)];
+        this.Boxes = [new Box(80, 80, 1120, 400, "#ffffff", "", "TopCenter")]
+    }
+
+    ClickedButton(id) {
+        switch (id) {
+            case 1:
+                GameState.LoadedMenu = new MainMenu();
+                break;
+        }
+    }
+
+    DrawExtra() {
+        GameState.Canvas.font = "20px Arial";
+        GameState.Canvas.fillStyle = "#000000";
+        GameState.Canvas.textAlign = "center";
+
+        let offset = 50;
+        GameState.Canvas.fillText("Move onto other player's colors to get points.", 640, 120 + offset);
+        GameState.Canvas.fillText("When at 20 points your square will get another square inside. Press button to place trap and lose 20 points.", 640, 150 + offset);
+        GameState.Canvas.fillText("Traps turns invisible after some time. Stepping on a trap you don't own and you are out.", 640, 180 + offset);
+        GameState.Canvas.fillText("When at 30 points your sqaure will get a rotated square inside. Hold button to get shield for some time and lose 30 points.", 640, 210 + offset);
+        GameState.Canvas.fillText("When you have a shield you can't be killed by traps and you will disarm the ones you move over.", 640, 240 + offset);
+        GameState.Canvas.fillText("After 10 seconds of not getting any points you will die.", 640, 270 + offset);
+        GameState.Canvas.fillText("Last player/team alive wins.", 640, 330 + offset);
+        GameState.Canvas.fillText("Good Luck!", 640, 360 + offset);
     }
 }
