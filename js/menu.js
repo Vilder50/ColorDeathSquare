@@ -182,6 +182,7 @@ class PlayerScreen extends Menu {
                     this.DrawPartBasicMenuBackground(1, 1, 14, 6);
                     this.SelectedPlayer = -1;
                     this.SelectedButton = -1;
+                    this.Boxes = [];
                     this.LoadButtons();
                 }
                 break;
@@ -271,7 +272,7 @@ class PlayerScreen extends Menu {
                 this.Buttons.push(new Button(560, 410, 140, 60, this.SelectedButton == 4 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[4]), 15));
             } else {
                 for (let i = 0; i < 5; i++) {
-                    this.Buttons.push(new Button(560 + i * 80, 330, 70, 60, player.Difficulty == i ? GameState.CreateColorString(GameState.GetColor(i)) : "#909090", player.Difficulty == i ? GameState.WhitenColor(GameState.GetColor(i),0.7) : "#dddddd", (i + 1), 16 + i));
+                    this.Buttons.push(new Button(560 + i * 80, 330, 70, 60, player.Difficulty == i ? GameState.CreateColorString(GameState.GetColor(i)) : "#909090", player.Difficulty == i ? GameState.WhitenColor(GameState.GetColor(i), 0.7) : "#dddddd", (i + 1), 16 + i));
                 }
             }
         }
