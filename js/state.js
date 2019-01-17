@@ -49,6 +49,18 @@ class State {
         }
     }
 
+    CreateColorString(rawColor) {
+        return "rgb(" + rawColor[0] + "," + rawColor[1] + "," + rawColor[2] + ")";
+    }
+
+    WhitenColor(rawColor, whitenPercent) {
+        for (let j = 0; j < 3; j++) {
+            rawColor[j] = rawColor[j] + (255 - rawColor[j]) * whitenPercent;
+        }
+
+        return this.CreateColorString(rawColor);
+    }
+
     Update() {
         GameState.UpdateNow();
         setTimeout(GameState.Update, 50);

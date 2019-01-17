@@ -238,22 +238,16 @@ class PlayerScreen extends Menu {
         }
 
         for (let i = 0; i < GameState.Players.length; i++) {
-            let color = GameState.GetColor(GameState.Players[i].ID);
-            let hoverColor = GameState.GetColor(GameState.Players[i].ID);
-            for (let j = 0; j < 3; j++) {
-                hoverColor[j] = hoverColor[j] + (255 - hoverColor[j]) * 0.5;
-            }
-            this.Buttons.push(new Button(160 + i * 160 + Math.floor(i / 3) * 80, 80, 80, 80, "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")", "rgb(" + hoverColor[0] + "," + hoverColor[1] + "," + hoverColor[2] + ")", (GameState.Players[i] instanceof Robot) ? "[*_*]" : "(o_o)", 100 + i));
+            let color = GameState.CreateColorString(GameState.GetColor(GameState.Players[i].ID));
+            let hoverColor = GameState.WhitenColor(GameState.GetColor(GameState.Players[i].ID), 0.7);
+            this.Buttons.push(new Button(160 + i * 160 + Math.floor(i / 3) * 80, 80, 80, 80, color, hoverColor, (GameState.Players[i] instanceof Robot) ? "[*_*]" : "(o_o)", 100 + i));
         }
 
         if (this.SelectedPlayer != -1) {
             for (let i = 0; i < 6; i++) {
-                let color = GameState.GetColor(i);
-                let hoverColor = color.slice();
-                for (let j = 0; j < 3; j++) {
-                    hoverColor[j] = hoverColor[j] + (255 - hoverColor[j]) * 0.5;
-                }
-                this.Buttons.push(new Button(330 + (i % 2) * 80, 250 + Math.floor(i / 2) * 80, 60, 60, "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")", "rgb(" + hoverColor[0] + "," + hoverColor[1] + "," + hoverColor[2] + ")", "", 5 + i));
+                let color = GameState.CreateColorString(GameState.GetColor(i));
+                let hoverColor = GameState.WhitenColor(GameState.GetColor(i), 0.7);
+                this.Buttons.push(new Button(330 + (i % 2) * 80, 250 + Math.floor(i / 2) * 80, 60, 60, color, hoverColor, "", 5 + i));
             }
             let player = GameState.Players[this.SelectedPlayer];
 
@@ -358,8 +352,7 @@ class PlayerScreen extends Menu {
 
     DrawExtra() {
         if (this.SelectedPlayer != -1) {
-            let color = GameState.GetColor(GameState.Players[this.SelectedPlayer].ID);
-            GameState.Canvas.fillStyle = "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
+            GameState.Canvas.fillStyle = GameState.CreateColorString(GameState.GetColor(GameState.Players[this.SelectedPlayer].ID));
             GameState.Canvas.fillRect(320, 240, 640, 240);
             GameState.Canvas.lineWidth = 4;
             GameState.Canvas.strokeRect(322, 242, 636, 236);

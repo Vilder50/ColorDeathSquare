@@ -159,7 +159,7 @@
     ColorNow() {
         let color = [this.Color[0] + (255 - this.Color[0]) * (10000 - this.NotMoving) / 10000, this.Color[1] + (255 - this.Color[1]) * (10000 - this.NotMoving) / 10000, this.Color[2] + (255 - this.Color[2]) * (10000 - this.NotMoving) / 10000];
         if (this.Shielding == 0) {
-            return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
+            return GameState.CreateColorString(color);
         } else {
             let colorAdder = (this.Shielding % 300) / 300 * 255;
             return "rgb(" + Math.max(0, Math.min(255, color[0] + colorAdder)) + "," + Math.max(0, Math.min(255, color[1] + colorAdder)) + "," + Math.max(0, Math.min(255, color[2] + colorAdder)) + ")";
