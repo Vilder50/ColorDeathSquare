@@ -147,6 +147,9 @@ class TrappedLocation {
 
     Forgetting(forgetAmount) {
         this.ForgetTimer -= Math.random() * forgetAmount;
+        if (GameState.TrapOption) {
+            return false;
+        }
         return (this.ForgetTimer <= 0);
     }
 }
