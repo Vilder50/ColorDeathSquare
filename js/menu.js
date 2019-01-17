@@ -94,7 +94,9 @@ class Menu {
         this.DrawExtra();
 
         for (let i = 0; i < this.Boxes.length; i++) {
-            this.Boxes[i].Draw();
+            if (this.Boxes[i] != null) {
+                this.Boxes[i].Draw();
+            }
         }
 
         for (let i = 0; i < this.Buttons.length; i++) {
@@ -387,9 +389,23 @@ class GameMenu extends Menu {
         this.Buttons = [new Button(40, 620, 80, 80, "#ff0000", "#ffaaaa", "Menu", 1), new Button(1160, 620, 80, 80, "#ff0000", "#ffaaaa", "Menu", 1)];
         this.StartGame();
         this.Boxes = [new Box(0, 0, 160, 720, "#dddddd", "Wins", "TopCenter"), new Box(1120, 0, 160, 720, "#dddddd", "Kills", "TopCenter")];
+        let offset = 0;
         for (let i = 0; i < 6; i++) {
-            this.Boxes.push(new Box(40, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.Wins[i], true));
-            this.Boxes.push(new Box(1160, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.Kills[i], true));
+            let playerHere = false;
+            for (let j = 0; j < GameState.Players.length; j++) {
+                if (GameState.Players[j].ID == i) {
+                    playerHere = true;
+                    break;
+                }
+            }
+            if (!playerHere) {
+                this.Boxes.push(null);
+                this.Boxes.push(null);
+                offset += 1;
+                continue;
+            }
+            this.Boxes.push(new Box(40, 40 + (i - offset) * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.Wins[i], true));
+            this.Boxes.push(new Box(1160, 40 + (i - offset) * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.Kills[i], true));
         }
     }
 
@@ -498,13 +514,17 @@ class GameMenu extends Menu {
 
     UpdateWinScores() {
         for (let i = 0; i < 6; i++) {
-            this.Boxes[2 + i * 2].Text = GameState.Wins[i];
+            if (this.Boxes[2 + i * 2] != null) {
+                this.Boxes[2 + i * 2].Text = GameState.Wins[i];
+            }
         }
     }
 
     UpdateKillScores() {
         for (let i = 0; i < 6; i++) {
-            this.Boxes[3 + i * 2].Text = GameState.Kills[i];
+            if (this.Boxes[3 + i * 2] != null) {
+                this.Boxes[3 + i * 2].Text = GameState.Kills[i];
+            }
         }
     }
 }
