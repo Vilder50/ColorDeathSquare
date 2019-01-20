@@ -16,6 +16,7 @@ class State {
         this.WallSizeOption = 1;
         this.RobotOption = false;
         this.TrapOption = false;
+        this.ExtraColors = {};
 
         this.Wins = [0, 0, 0, 0, 0, 0];
         this.Kills = [0, 0, 0, 0, 0, 0];
@@ -54,6 +55,14 @@ class State {
                 return [255, 0, 0];
             case 5:
                 return [255, 0, 255];
+            default:
+                if (this.ExtraColors["c" + (colorID - 6)] == undefined) {
+                    this.ExtraColors["c" + (colorID - 6)] = [Math.floor(Math.random() * 128) + 128];
+                    this.ExtraColors["c" + (colorID - 6)].splice(Math.floor(Math.random() * 2), 0, Math.floor(Math.random() * 256));
+                    this.ExtraColors["c" + (colorID - 6)].splice(Math.floor(Math.random() * 3), 0, 0);
+                    this.ExtraColors["c" + (colorID - 6)] = this.WhitenColor(this.ExtraColors["c" + (colorID - 6)], Math.random() * 1.5 - 0.75, true);
+                }
+                return this.ExtraColors["c" + (colorID - 6)];
         }
     }
 
@@ -61,12 +70,22 @@ class State {
         return "rgb(" + rawColor[0] + "," + rawColor[1] + "," + rawColor[2] + ")";
     }
 
-    WhitenColor(rawColor, whitenPercent) {
-        for (let j = 0; j < 3; j++) {
-            rawColor[j] = rawColor[j] + (255 - rawColor[j]) * whitenPercent;
+    WhitenColor(rawColor, whitenPercent, returnData) {
+        if (whitenPercent >= 0) {
+            for (let j = 0; j < 3; j++) {
+                rawColor[j] = rawColor[j] + (255 - rawColor[j]) * whitenPercent;
+            }
+        } else {
+            whitenPercent += 1;
+            for (let j = 0; j < 3; j++) {
+                rawColor[j] = rawColor[j] * whitenPercent;
+            }
         }
-
-        return this.CreateColorString(rawColor);
+        if (returnData == undefined) {
+            return this.CreateColorString(rawColor);
+        } else {
+            return rawColor;
+        }
     }
 
     Update() {
