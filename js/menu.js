@@ -494,6 +494,12 @@ class GameMenu extends Menu {
                     this.Boxes[0].Color = GameState.CreateColorString(GameState.GetColor(winner));
                     this.Boxes[1].Color = this.Boxes[0].Color;
                     this.UpdateWinScores();
+                    for (let i = 0; i < GameState.Players.length; i++) {
+                        if (GameState.Players[i].ID == winner) {
+                            GameState.Players[i].Shielding = 10000;
+                            GameState.Players[i].AddMoving = 10000;
+                        }
+                    }
                 }
             }
             this.ResetTimer += 40;
