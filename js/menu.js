@@ -428,7 +428,7 @@ class GameMenu extends Menu {
         let randomness = Math.floor(around / 3);
         let width = around + Math.floor(Math.random() * randomness - randomness / 2);
         let height = Math.round(totalSize / width);
-        let tileSize = Math.floor((720 - 4) / Math.max(width, height));
+        let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(width, height));
 
         this.Particles = [];
 

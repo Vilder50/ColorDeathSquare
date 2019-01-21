@@ -308,9 +308,10 @@
     Draw() {
         GameState.Canvas.fillStyle = this.ColorNow();
         GameState.Canvas.lineWidth = 2;
+        let realWallSize = GameState.WallSizeOption + 1;
         let playerSize = GameState.LoadedMenu.Map.TileSize / 1.5;
-        let middleX = GameState.LoadedMenu.MapOffsetX + 2 + (this.X / 1000) * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
-        let middleY = GameState.LoadedMenu.MapOffsetY + 2 + (this.Y / 1000) * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
+        let middleX = GameState.LoadedMenu.MapOffsetX + realWallSize + (this.X / 1000) * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
+        let middleY = GameState.LoadedMenu.MapOffsetY + realWallSize + (this.Y / 1000) * GameState.LoadedMenu.Map.TileSize + GameState.LoadedMenu.Map.TileSize / 2;
         GameState.Canvas.translate(middleX, middleY);
         GameState.Canvas.rotate(this.Rotation * Math.PI / 360000);
         GameState.Canvas.fillRect(playerSize / -2, playerSize / -2, playerSize, playerSize);

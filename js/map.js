@@ -147,9 +147,10 @@ class Map {
         this.TileImage = drawOn.getImageData(0, 0, this.TileSize * this.Width, this.TileSize * this.Height);
         drawOn.clearRect(0, 0, this.TileSize * this.Width, this.TileSize * this.Height);
 
+        let realWallSize = GameState.WallSizeOption + 1;
         drawOn.fillStyle = "#555555";
-        drawOn.lineWidth = (GameState.WallSizeOption + 1) * 2;
-        drawOn.strokeRect((GameState.WallSizeOption + 1), (GameState.WallSizeOption + 1), this.TileSize * this.Width, this.TileSize * this.Height);
+        drawOn.lineWidth = realWallSize * 2;
+        drawOn.strokeRect(realWallSize, realWallSize, this.TileSize * this.Width, this.TileSize * this.Height);
         drawOn.beginPath();
         for (let i = 0; i < this.Walls.length; i++) {
             if (this.Walls[i] === true) {
@@ -157,12 +158,12 @@ class Map {
                 let x = i % this.Width;
 
                 if (y % 2 == 0) {
-                    drawOn.moveTo(x * this.TileSize + (GameState.WallSizeOption + 1), Math.floor(y / 2) * this.TileSize);
-                    drawOn.lineTo(x * this.TileSize + (GameState.WallSizeOption + 1), Math.floor(y / 2 + 1) * this.TileSize + (GameState.WallSizeOption + 1) * 2);
+                    drawOn.moveTo(x * this.TileSize + realWallSize, Math.floor(y / 2) * this.TileSize);
+                    drawOn.lineTo(x * this.TileSize + realWallSize, Math.floor(y / 2 + 1) * this.TileSize + realWallSize * 2);
                 }
                 if (y % 2 == 1) {
-                    drawOn.moveTo(x * this.TileSize, Math.floor((y + 1) / 2) * this.TileSize + (GameState.WallSizeOption + 1));
-                    drawOn.lineTo((x + 1) * this.TileSize + (GameState.WallSizeOption + 1) * 2, Math.floor((y + 1) / 2) * this.TileSize + (GameState.WallSizeOption + 1));
+                    drawOn.moveTo(x * this.TileSize, Math.floor((y + 1) / 2) * this.TileSize + realWallSize);
+                    drawOn.lineTo((x + 1) * this.TileSize + realWallSize * 2, Math.floor((y + 1) / 2) * this.TileSize + realWallSize);
                 }
             }
         }
@@ -170,8 +171,9 @@ class Map {
     }
 
     Draw() {
-        GameState.Canvas.putImageData(this.TileImage, GameState.LoadedMenu.MapOffsetX + (GameState.WallSizeOption + 1), GameState.LoadedMenu.MapOffsetY + (GameState.WallSizeOption + 1));
-        GameState.Canvas.drawImage(GameState.ExtraRawCanvas, 0, 0, this.TileSize * this.Width + (GameState.WallSizeOption + 1) * 2, this.TileSize * this.Height + (GameState.WallSizeOption + 1) * 2, GameState.LoadedMenu.MapOffsetX, GameState.LoadedMenu.MapOffsetY, this.TileSize * this.Width + (GameState.WallSizeOption + 1) * 2, this.TileSize * this.Height + (GameState.WallSizeOption + 1) * 2)
+        let realWallSize = GameState.WallSizeOption + 1;
+        GameState.Canvas.putImageData(this.TileImage, GameState.LoadedMenu.MapOffsetX + realWallSize, GameState.LoadedMenu.MapOffsetY + realWallSize);
+        GameState.Canvas.drawImage(GameState.ExtraRawCanvas, 0, 0, this.TileSize * this.Width + realWallSize * 2, this.TileSize * this.Height + realWallSize * 2, GameState.LoadedMenu.MapOffsetX, GameState.LoadedMenu.MapOffsetY, this.TileSize * this.Width + (GameState.WallSizeOption + 1) * 2, this.TileSize * this.Height + (GameState.WallSizeOption + 1) * 2)
     }
 
     ColorTile(locationX, locationY, colorID) {
