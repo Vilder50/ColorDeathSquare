@@ -90,7 +90,7 @@ class State {
 
     Update() {
         GameState.UpdateNow();
-        setTimeout(GameState.Update, 50);
+        setTimeout(GameState.Update, 40);
     }
     UpdateNow() {
         this.LoadedMenu.Update(this.MouseX, this.MouseY);
