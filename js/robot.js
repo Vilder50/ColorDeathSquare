@@ -4,7 +4,6 @@ class Robot extends Player {
         super([], id);
         this.Difficulty = 2;
         this.MovementDelay = 0;
-        this.RememberedTraps = [];
     }
 
     Power() {
@@ -25,97 +24,127 @@ class Robot extends Player {
 
     Move() {
         if (!this.Moving()) {
-            if (this.Difficulty <= 2) {
-                if (this.MovementDelay >= 0) {
-                    this.MovementDelay -= 40;
-                    return;
-                } else {
-                    this.MovementDelay = Math.random() * (3 - this.Difficulty) * 15;
+            let locationX = this.X / 1000;
+            let locationY = this.Y / 1000;
+            if (this.GoingPath.length >= 1) {
+                let location = this.AddDirection(locationX, locationY, this.GoingPath[0]);
+                if (!(!(GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].From === this.ID) && this.RememberedTraps[location[0]][location[1]] != undefined && GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].State == 1 && this.Shielding == 0)) {
+                    let playerThere = GameState.PlayerAt(this.ID, location[0], location[1], 20, false);
+                    if ((this.Shielding != 0 && playerThere) || !playerThere || this.Difficulty <= 3) {
+                        this.MovingIn(this.GoingPath[0]);
+                        this.GoingPath.splice(0, 1);
+                        return;
+                    }
                 }
-            }
-            if (this.Difficulty <= 3) {
-                for (let x = 0; x < GameState.LoadedMenu.Map.Width; x++) {
-                    for (let y = 0; y < GameState.LoadedMenu.Map.Height; y++) {
-                        if (this.RememberedTraps[x][y] != null) {
-                            if (this.RememberedTraps[x][y].Forgetting(Math.pow(5 - this.Difficulty, 2) * 50)) {
-                                this.RememberedTraps[x][y] = null;
+                this.GoingPath = [];
+            } else {
+                if (this.Difficulty <= 2) {
+                    if (this.MovementDelay >= 0) {
+                        this.MovementDelay -= 40;
+                        return;
+                    } else {
+                        this.MovementDelay = Math.random() * (3 - this.Difficulty) * 15;
+                    }
+                }
+                if (this.Difficulty <= 3) {
+                    for (let x = 0; x < GameState.LoadedMenu.Map.Width; x++) {
+                        for (let y = 0; y < GameState.LoadedMenu.Map.Height; y++) {
+                            if (this.RememberedTraps[x][y] != null) {
+                                if (this.RememberedTraps[x][y].Forgetting(Math.pow(5 - this.Difficulty, 2) * 50)) {
+                                    this.RememberedTraps[x][y] = null;
+                                }
                             }
                         }
                     }
                 }
-            }
-            let spreadedMap = [];
-            let spreads = [];
-            for (let x = 0; x < GameState.LoadedMenu.Map.Width; x++) {
-                spreadedMap.push([]);
-                for (let y = 0; y < GameState.LoadedMenu.Map.Height; y++) {
-                    spreadedMap[x].push(false);
-                }
-            }
-            let locationX = this.X / 1000;
-            let locationY = this.Y / 1000;
-            spreadedMap[locationX][locationY] = true;
-
-            for (let i = 0; i < 4; i++) {
-                if (this.CanMove(i)) {
-                    let location = this.AddDirection(locationX, locationY, i);
-                    spreads.push(new Spread(location[0], location[1], i))
-                    spreadedMap[location[0]][location[1]] = true;
-                }
-            }
-
-            let possibleDirection = [];
-            let newSpreads = [];
-            let distance = 0;
-            let trapOut = false;
-            while (possibleDirection.length == 0 && distance <= 10) {
-                distance++;
-                for (let i = 0; i < spreads.length; i++) {
-                    if (this.Difficulty >= 2 && this.Shielding == 0 && this.NotMoving >= 2000 && GameState.PlayerAt(this.ID, spreads[i].X, spreads[i].Y, 20, false)) {
-                        trapOut = true;
-                        continue;
+                let spreadedMap = [];
+                let spreads = [];
+                for (let x = 0; x < GameState.LoadedMenu.Map.Width; x++) {
+                    spreadedMap.push([]);
+                    for (let y = 0; y < GameState.LoadedMenu.Map.Height; y++) {
+                        spreadedMap[x].push(false);
                     }
-                    if (!(GameState.LoadedMenu.Map.Tiles[spreads[i].X][spreads[i].Y].From === this.ID)) {
-                        if (this.RememberedTraps[spreads[i].X][spreads[i].Y] != undefined && GameState.LoadedMenu.Map.Tiles[spreads[i].X][spreads[i].Y].State == 1 && this.Shielding == 0) {
+                }
+
+                spreadedMap[locationX][locationY] = true;
+
+                for (let i = 0; i < 4; i++) {
+                    if (this.CanMove(i)) {
+                        let location = this.AddDirection(locationX, locationY, i);
+                        spreads.push(new Spread(location[0], location[1]));
+                        spreads[spreads.length - 1].FullPath.push(i);
+                        spreadedMap[location[0]][location[1]] = true;
+                    }
+                }
+
+                let possibleDirection = [];
+                let newSpreads = [];
+                let distance = 0;
+                let trapOut = false;
+                while (possibleDirection.length == 0 && distance <= 10) {
+                    distance++;
+                    for (let i = 0; i < spreads.length; i++) {
+                        if (this.Difficulty >= 2 && this.Shielding == 0 && this.NotMoving >= 2000 && GameState.PlayerAt(this.ID, spreads[i].X, spreads[i].Y, 20, false)) {
                             trapOut = true;
                             continue;
                         }
-                        possibleDirection.push(spreads[i].Direction);
-                    } else if (possibleDirection.length == 0) {
-                        for (let j = 0; j < 4; j++) {
-                            if (this.CanMove(j, spreads[i].X, spreads[i].Y)) {
+                        if (!(GameState.LoadedMenu.Map.Tiles[spreads[i].X][spreads[i].Y].From === this.ID)) {
+                            if (this.RememberedTraps[spreads[i].X][spreads[i].Y] != undefined && GameState.LoadedMenu.Map.Tiles[spreads[i].X][spreads[i].Y].State == 1 && this.Shielding == 0) {
+                                trapOut = true;
+                                continue;
+                            }
+                            possibleDirection.push(spreads[i].FullPath);
+                        } else if (possibleDirection.length == 0) {
+                            for (let j = 0; j < 4; j++) {
                                 let location = this.AddDirection(spreads[i].X, spreads[i].Y, j);
-                                newSpreads.push(new Spread(location[0], location[1], spreads[i].Direction))
-                                spreadedMap[location[0]][location[1]] = true;
+                                if (this.CanMove(j, spreads[i].X, spreads[i].Y) && !spreadedMap[location[0]][location[1]]) {
+                                    let location = this.AddDirection(spreads[i].X, spreads[i].Y, j);
+                                    newSpreads.push(new Spread(location[0], location[1]));
+                                    newSpreads[newSpreads.length - 1].FullPath = spreads[i].FullPath.slice();
+                                    newSpreads[newSpreads.length - 1].FullPath.push(j);
+                                    spreadedMap[location[0]][location[1]] = true;
+                                }
                             }
                         }
                     }
+
+                    spreads = newSpreads.slice();
+                    newSpreads = [];
                 }
 
-                spreads = newSpreads.slice();
-                newSpreads = [];
-            }
-
-            if (distance > 10) {
-                if (trapOut && this.Points >= 30) {
-                    this.Points -= 30;
-                    this.Shielding = 3000;
-                    return;
-                }
-                let randomDirection = Math.floor(Math.random() * 4);
-                if (this.CanMove(randomDirection)) {
-                    let location = this.AddDirection(locationX, locationY, randomDirection);
-                    if (!(!(GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].From === this.ID) && this.RememberedTraps[location[0]][location[1]] != undefined && GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].State == 1)) {
-                        let playerThere = GameState.PlayerAt(this.ID, location[0], location[1], 20, false);
-                        if ((this.Shielding != 0 && playerThere) || !playerThere || this.Difficulty <= 3) {
-                            this.MovingIn(randomDirection);
+                if (possibleDirection.length == 0) {
+                    if (trapOut && this.Points >= 30) {
+                        this.Points -= 30;
+                        this.Shielding = 3000;
+                        return;
+                    } else {
+                        if (spreads.length == 0) {
+                            let randomDirection = Math.floor(Math.random() * 4);
+                            if (this.CanMove(randomDirection)) {
+                                let location = this.AddDirection(locationX, locationY, randomDirection);
+                                if (!(!(GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].From === this.ID) && this.RememberedTraps[location[0]][location[1]] != undefined && GameState.LoadedMenu.Map.Tiles[location[0]][location[1]].State == 1)) {
+                                    let playerThere = GameState.PlayerAt(this.ID, location[0], location[1], 20, false);
+                                    if ((this.Shielding != 0 && playerThere) || !playerThere || this.Difficulty <= 3) {
+                                        this.MovingIn(randomDirection);
+                                    }
+                                }
+                            }
+                        } else {
+                            this.GoingPath = spreads[Math.floor(Math.random() * spreads.length)].FullPath;
                         }
                     }
+                } else {
+                    this.GoingPath = possibleDirection[Math.floor(Math.random() * possibleDirection.length)]
+                    this.MovingIn(this.GoingPath[0]);
+                    this.GoingPath.splice(0, 1);
                 }
-            } else {
-                this.MovingIn(possibleDirection[Math.floor(Math.random() * possibleDirection.length)]);
             }
         }
+    }
+
+    ExtraReset() {
+        this.RememberedTraps = [];
+        this.GoingPath = [];
     }
 
     AddDirection(x, y, direction) {
@@ -133,10 +162,10 @@ class Robot extends Player {
 }
 
 class Spread {
-    constructor(x,y,direction) {
+    constructor(x,y) {
         this.X = x;
         this.Y = y;
-        this.Direction = direction;
+        this.FullPath = [];
     }
 }
 

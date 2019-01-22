@@ -303,6 +303,12 @@
         this.Shielding = 300;
         this.PowerX = 0;
         this.PowerY = 0;
+
+        this.ExtraReset();
+    }
+
+    ExtraReset() {
+
     }
 
     Draw() {
