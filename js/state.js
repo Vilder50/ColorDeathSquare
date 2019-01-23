@@ -73,20 +73,21 @@ class State {
     }
 
     WhitenColor(rawColor, whitenPercent, returnData) {
+        let newColor = rawColor.slice();
         if (whitenPercent >= 0) {
             for (let j = 0; j < 3; j++) {
-                rawColor[j] = rawColor[j] + (255 - rawColor[j]) * whitenPercent;
+                newColor[j] = newColor[j] + (255 - newColor[j]) * whitenPercent;
             }
         } else {
             whitenPercent += 1;
             for (let j = 0; j < 3; j++) {
-                rawColor[j] = rawColor[j] * whitenPercent;
+                newColor[j] = newColor[j] * whitenPercent;
             }
         }
         if (returnData == undefined) {
-            return this.CreateColorString(rawColor);
+            return this.CreateColorString(newColor);
         } else {
-            return rawColor;
+            return newColor;
         }
     }
 
