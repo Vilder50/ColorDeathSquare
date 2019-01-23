@@ -62,7 +62,7 @@ class State {
                     this.ExtraColors["c" + (colorID - 6)] = [Math.floor(Math.random() * 128) + 128];
                     this.ExtraColors["c" + (colorID - 6)].splice(Math.floor(Math.random() * 2), 0, Math.floor(Math.random() * 256));
                     this.ExtraColors["c" + (colorID - 6)].splice(Math.floor(Math.random() * 3), 0, 0);
-                    this.ExtraColors["c" + (colorID - 6)] = this.WhitenColor(this.ExtraColors["c" + (colorID - 6)], Math.random() * 1.5 - 0.75, true);
+                    this.ExtraColors["c" + (colorID - 6)] = this.WhitenColor(this.ExtraColors["c" + (colorID - 6)], Math.random() * 1.25 - 0.5, true);
                 }
                 return this.ExtraColors["c" + (colorID - 6)];
         }
