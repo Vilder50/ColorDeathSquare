@@ -534,13 +534,13 @@ class GameMenu extends Menu {
             let sorted = false;
             let value = GameState.Wins[index];
             for (let i = 0; i < sortedWins.length; i++) {
-                if (i >= 5) {
+                if (i >= 7) {
                     sorted = true;
                     break;
                 }
                 if (value > sortedWins[i].Amount) {
                     sorted = true;
-                    sortedWins.splice(0, 0, { ID: index, Amount: value });
+                    sortedWins.splice(i, 0, { ID: index, Amount: value });
                     break;
                 }
             }
@@ -562,13 +562,13 @@ class GameMenu extends Menu {
             let sorted = false;
             let value = GameState.Kills[index];
             for (let i = 0; i < sortedKills.length; i++) {
-                if (i >= 5) {
+                if (i >= 7) {
                     sorted = true;
                     break;
                 }
                 if (value > sortedKills[i].Amount) {
                     sorted = true;
-                    sortedKills.splice(0, 0, { ID: index, Amount: value });
+                    sortedKills.splice(i, 0, { ID: index, Amount: value });
                     break;
                 }
             }
