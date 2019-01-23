@@ -63,6 +63,21 @@ class Menu {
         GameState.Canvas.clearRect(0, 0, 1280, 720);
         this.Buttons = [];
         this.Boxes = [];
+        for (let x = 0; x < 16; x++) {
+            for (let y = 0; y < 9; y++) {
+                if ((y + x) % 2 == 0) {
+                    GameState.Canvas.fillStyle = "#dddddd";
+                }
+                else {
+                    GameState.Canvas.fillStyle = "#ffffff";
+                }
+                GameState.Canvas.fillRect(x * 80, y * 80, 80, 80);
+            }
+        }
+        GameState.Canvas.lineWidth = 4;
+        GameState.Canvas.strokeRect(2, 2, GameState.RawCanvas.width - 4, GameState.RawCanvas.height - 4);
+        this.Background = GameState.Canvas.getImageData(0, 0, 1280, 720);
+        GameState.Canvas.clearRect(0, 0, 1280, 720)
     }
 
     Click(x,y) {
@@ -91,13 +106,13 @@ class Menu {
     }
 
     Draw() {
+        this.DrawExtra();
+
         for (let i = 0; i < this.Boxes.length; i++) {
             if (this.Boxes[i] != null) {
                 this.Boxes[i].Draw();
             }
         }
-
-        this.DrawExtra();
 
         for (let i = 0; i < this.Buttons.length; i++) {
             this.Buttons[i].Draw();
@@ -109,23 +124,7 @@ class Menu {
     }
 
     DrawBasicMenuBackground() {
-        this.DrawPartBasicMenuBackground(0,0,16,9);
-    }
-
-    DrawPartBasicMenuBackground(startX, startY, endX, endY) {
-        for (let x = startX; x < endX; x++) {
-            for (let y = startY; y < endY; y++) {
-                if ((y + x) % 2 == 0) {
-                    GameState.Canvas.fillStyle = "#dddddd";
-                }
-                else {
-                    GameState.Canvas.fillStyle = "#ffffff";
-                }
-                GameState.Canvas.fillRect(x * 80, y * 80, 80, 80);
-            }
-        }
-        GameState.Canvas.lineWidth = 4;
-        GameState.Canvas.strokeRect(2, 2, GameState.RawCanvas.width - 4, GameState.RawCanvas.height - 4);
+        GameState.Canvas.putImageData(this.Background, 0, 0);
     }
 }
 
@@ -166,7 +165,6 @@ class PlayerScreen extends Menu {
         this.ShownPage = 0;
 
         this.LoadButtons();
-        this.DrawBasicMenuBackground();
     }
 
     ClickedButton(id) {
@@ -210,7 +208,6 @@ class PlayerScreen extends Menu {
                     let playerLocation = id - 100;
                     if (this.RemvoingPlayer) {
                         GameState.Players.splice(playerLocation, 1);
-                        this.DrawPartBasicMenuBackground(1, 1, 14, 2);
                         this.LoadButtons();
                     } else {
                         this.SelectedPlayer = playerLocation;
@@ -241,7 +238,6 @@ class PlayerScreen extends Menu {
     }
 
     DeselectPlayer() {
-        this.DrawPartBasicMenuBackground(1, 1, 14, 6);
         this.SelectedPlayer = -1;
         this.SelectedButton = -1;
         this.Boxes = [];
@@ -254,7 +250,6 @@ class PlayerScreen extends Menu {
         if (GameState.Players.length > 1) {
             this.Buttons.push(new Button(320, 560, 160, 80, "#ff0000", "#ffaaaa", this.RemvoingPlayer ? "Removing..." : "Remove Player", 2));
         } else {
-            this.DrawPartBasicMenuBackground(4, 7, 6, 8);
             this.RemvoingPlayer = false;
         }
 
@@ -263,17 +258,12 @@ class PlayerScreen extends Menu {
 
         if (this.ShownPage != 0) {
             this.Buttons.push(new Button(90, 90, 60, 60, "#ff8000", GameState.WhitenColor(GameState.GetColor(3), 0.7), "<", -1));
-        } else {
-            this.DrawPartBasicMenuBackground(1, 1, 2, 2);
         }
 
         if ((this.ShownPage + 1) * 6 < GameState.Players.length) {
             this.Buttons.push(new Button(1130, 90, 60, 60, "#00ffff", "#aaffff", ">", -2));
-        } else {
-            this.DrawPartBasicMenuBackground(14, 1, 15, 2);
         }
 
-        this.DrawPartBasicMenuBackground(1, 1, 14, 2);
         for (let i = this.ShownPage * 6; i < Math.min(GameState.Players.length, this.ShownPage * 6 + 6); i++) {
             let color = GameState.CreateColorString(GameState.GetColor(GameState.Players[i].ID));
             let hoverColor = GameState.WhitenColor(GameState.GetColor(GameState.Players[i].ID), 0.7);
@@ -403,6 +393,10 @@ class PlayerScreen extends Menu {
                 }
             }
         }
+    }
+
+    DrawExtra() {
+        this.DrawBasicMenuBackground();
     }
 }
 
