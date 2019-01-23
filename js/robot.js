@@ -15,7 +15,7 @@ class Robot extends Player {
             GameState.LoadedMenu.Map.PlaceTrap(locationX, locationY);
         }
 
-        if ((this.Points >= 50 && this.Difficulty == 4) || (this.Points >= 40 && this.Difficulty <= 3) || (this.Points >= 20 && this.Difficulty == 0)) {
+        if ((this.Points >= 50 && this.Difficulty == 4) || (this.Points >= 40 && this.Difficulty <= 3) || (this.Points >= 25 && this.Difficulty == 0)) {
             this.Points -= 20;
             GameState.LoadedMenu.Map.ColorTile(locationX, locationY, this.ID);
             GameState.LoadedMenu.Map.PlaceTrap(locationX, locationY);
