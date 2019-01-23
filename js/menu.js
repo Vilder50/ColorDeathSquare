@@ -162,14 +162,23 @@ class PlayerScreen extends Menu {
 
         this.SelectedPlayer = -1;
         this.SelectedButton = -1;
+        this.RemvoingPlayer = false;
+        this.ShownPage = 0;
 
         this.LoadButtons();
         this.DrawBasicMenuBackground();
-        this.RemvoingPlayer = false;
     }
 
     ClickedButton(id) {
         switch (id) {
+            case -2:
+                this.ShownPage++;
+                this.LoadButtons();
+                break;
+            case -1:
+                this.ShownPage--;
+                this.LoadButtons();
+                break;
             case 1:
                 GameState.LoadedMenu = new MainMenu();
                 break;
@@ -184,13 +193,15 @@ class PlayerScreen extends Menu {
                 break;
             case 3:
                 this.RemvoingPlayer = false;
-                GameState.Players.push(new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "],this.GetAddingID()));
+                GameState.Players.push(new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], this.GetAddingID()));
+                this.ShownPage = Math.floor((GameState.Players.length - 1) / 6);
                 this.LoadButtons();
                 this.DeselectPlayer();
                 break;
             case 4:
                 this.RemvoingPlayer = false;
                 GameState.Players.push(new Robot(this.GetAddingID()));
+                this.ShownPage = Math.floor((GameState.Players.length - 1) / 6);
                 this.LoadButtons();
                 this.DeselectPlayer();
                 break;
@@ -247,17 +258,26 @@ class PlayerScreen extends Menu {
             this.RemvoingPlayer = false;
         }
 
-        if (GameState.Players.length < 6) {
-            this.Buttons.push(new Button(800, 560, 160, 80, "#ffff00", "#ffffaa", "Add Player", 3));
-            this.Buttons.push(new Button(1040, 560, 160, 80, "#ff00ff", "#ffaaff", "Add Robot", 4));
+        this.Buttons.push(new Button(800, 560, 160, 80, "#ffff00", "#ffffaa", "Add Player", 3));
+        this.Buttons.push(new Button(1040, 560, 160, 80, "#ff00ff", "#ffaaff", "Add Robot", 4));
+
+        if (this.ShownPage != 0) {
+            this.Buttons.push(new Button(90, 90, 60, 60, "#ff8000", GameState.WhitenColor(GameState.GetColor(3), 0.7), "<", -1));
         } else {
-            this.DrawPartBasicMenuBackground(10,7,15,8);
+            this.DrawPartBasicMenuBackground(1, 1, 2, 2);
         }
 
-        for (let i = 0; i < GameState.Players.length; i++) {
+        if ((this.ShownPage + 1) * 6 < GameState.Players.length) {
+            this.Buttons.push(new Button(1130, 90, 60, 60, "#00ffff", "#aaffff", ">", -2));
+        } else {
+            this.DrawPartBasicMenuBackground(14, 1, 15, 2);
+        }
+
+        this.DrawPartBasicMenuBackground(1, 1, 14, 2);
+        for (let i = this.ShownPage * 6; i < Math.min(GameState.Players.length, this.ShownPage * 6 + 6); i++) {
             let color = GameState.CreateColorString(GameState.GetColor(GameState.Players[i].ID));
             let hoverColor = GameState.WhitenColor(GameState.GetColor(GameState.Players[i].ID), 0.7);
-            this.Buttons.push(new Button(160 + i * 160 + Math.floor(i / 3) * 80, 80, 80, 80, color, hoverColor, (GameState.Players[i] instanceof Robot) ? "[*_*]" : "(o_o)", 100 + i));
+            this.Buttons.push(new Button(160 + (i % 6) * 160 + Math.floor((i % 6) / 3) * 80, 80, 80, 80, color, hoverColor, (GameState.Players[i] instanceof Robot) ? "[*_*]" : "(o_o)", 100 + i));
         }
 
         if (this.SelectedPlayer != -1) {
@@ -286,7 +306,7 @@ class PlayerScreen extends Menu {
 
     GetAddingID() {
         let foundNumber = false;
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; true; i++) {
             for (let j = 0; j < GameState.Players.length; j++) {
                 if (GameState.Players[j].ID == i) {
                     foundNumber = false;
@@ -299,7 +319,6 @@ class PlayerScreen extends Menu {
                 return i;
             }
         }
-        return 6;
     }
 
     KeyText(text) {
