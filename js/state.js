@@ -18,8 +18,8 @@ class State {
         this.TrapOption = false;
         this.ExtraColors = {};
 
-        this.Wins = [0, 0, 0, 0, 0, 0];
-        this.Kills = [0, 0, 0, 0, 0, 0];
+        this.Wins = { };
+        this.Kills = { };
     }
 
     Ready() {
@@ -42,6 +42,8 @@ class State {
     }
 
     GetColor(colorID) {
+        this.Wins[colorID] = this.Wins[colorID] == undefined ? 0 : this.Wins[colorID];
+        this.Kills[colorID] = this.Kills[colorID] == undefined ? 0 : this.Kills[colorID];
         switch (colorID) {
             case 0:
                 return [0, 255, 255];

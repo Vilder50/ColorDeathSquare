@@ -392,25 +392,9 @@ class GameMenu extends Menu {
         this.ResetTimer = 0;
         this.Buttons = [new Button(40, 620, 80, 80, "#ff0000", "#ffaaaa", "Menu", 1), new Button(1160, 620, 80, 80, "#ff0000", "#ffaaaa", "Menu", 1)];
         this.StartGame();
-        this.Boxes = [new Box(0, 0, 160, 720, "#dddddd", "Wins", "TopCenter"), new Box(1120, 0, 160, 720, "#dddddd", "Kills", "TopCenter")];
-        let offset = 0;
-        for (let i = 0; i < 6; i++) {
-            let playerHere = false;
-            for (let j = 0; j < GameState.Players.length; j++) {
-                if (GameState.Players[j].ID == i) {
-                    playerHere = true;
-                    break;
-                }
-            }
-            if (!playerHere) {
-                this.Boxes.push(null);
-                this.Boxes.push(null);
-                offset += 1;
-                continue;
-            }
-            this.Boxes.push(new Box(40, 40 + (i - offset) * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.Wins[i], true));
-            this.Boxes.push(new Box(1160, 40 + (i - offset) * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.Kills[i], true));
-        }
+        this.Boxes = [new Box(0, 0, 160, 720, "#dddddd", "Wins", "TopCenter"), new Box(1120, 0, 160, 720, "#dddddd", "Kills", "TopCenter"), null, null, null, null, null, null, null, null, null, null, null, null];
+        this.UpdateWinScores();
+        this.UpdateKillScores();
     }
 
     ClickedButton(id) {
@@ -523,19 +507,69 @@ class GameMenu extends Menu {
     }
 
     UpdateWinScores() {
-        for (let i = 0; i < 6; i++) {
-            if (this.Boxes[2 + i * 2] != null) {
-                this.Boxes[2 + i * 2].Text = GameState.Wins[i];
+        let sortedWins = [];
+        for (let index in GameState.Wins) {
+            if (isNaN(index) || !this.ColorIsIngame(index)) {
+                continue;
             }
+            let sorted = false;
+            let value = GameState.Wins[index];
+            for (let i = 0; i < sortedWins.length; i++) {
+                if (i >= 5) {
+                    sorted = true;
+                    break;
+                }
+                if (value > sortedWins[i].Amount) {
+                    sorted = true;
+                    sortedWins.splice(0, 0, { ID: index, Amount: value });
+                    break;
+                }
+            }
+            if (!sorted) {
+                sortedWins.push({ ID: index, Amount: value });
+            }
+        }
+        for (let i = 0; i < Math.min(sortedWins.length, 6); i++) {
+            this.Boxes[i + 2] = new Box(40, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(Number(sortedWins[i].ID))), sortedWins[i].Amount, true);
         }
     }
 
     UpdateKillScores() {
-        for (let i = 0; i < 6; i++) {
-            if (this.Boxes[3 + i * 2] != null) {
-                this.Boxes[3 + i * 2].Text = GameState.Kills[i];
+        let sortedKills = [];
+        for (let index in GameState.Kills) {
+            if (isNaN(index) || !this.ColorIsIngame(index)) {
+                continue;
+            }
+            let sorted = false;
+            let value = GameState.Kills[index];
+            for (let i = 0; i < sortedKills.length; i++) {
+                if (i >= 5) {
+                    sorted = true;
+                    break;
+                }
+                if (value > sortedKills[i].Amount) {
+                    sorted = true;
+                    sortedKills.splice(0, 0, { ID: index, Amount: value });
+                    break;
+                }
+            }
+            if (!sorted) {
+                sortedKills.push({ ID: index, Amount: value });
             }
         }
+        for (let i = 0; i < Math.min(sortedKills.length, 6); i++) {
+            this.Boxes[i + 8] = new Box(1160, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(Number(sortedKills[i].ID))), sortedKills[i].Amount, true);
+        }
+    }
+
+    ColorIsIngame(id) {
+        for (let i = 0; i < GameState.Players.length; i++) {
+            if (GameState.Players[i].ID == id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
