@@ -179,22 +179,20 @@ class PlayerScreen extends Menu {
                     this.Buttons[1].Text = this.RemvoingPlayer ? "Removing..." : "Remove Player";
                 } else {
                     GameState.Players.splice(this.SelectedPlayer, 1);
-                    this.DrawPartBasicMenuBackground(1, 1, 14, 6);
-                    this.SelectedPlayer = -1;
-                    this.SelectedButton = -1;
-                    this.Boxes = [];
-                    this.LoadButtons();
+                    this.DeselectPlayer();
                 }
                 break;
             case 3:
                 this.RemvoingPlayer = false;
                 GameState.Players.push(new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "],this.GetAddingID()));
                 this.LoadButtons();
+                this.DeselectPlayer();
                 break;
             case 4:
                 this.RemvoingPlayer = false;
                 GameState.Players.push(new Robot(this.GetAddingID()));
                 this.LoadButtons();
+                this.DeselectPlayer();
                 break;
             default:
                 if (id >= 100) {
@@ -229,6 +227,14 @@ class PlayerScreen extends Menu {
                 }
                 break;
         }
+    }
+
+    DeselectPlayer() {
+        this.DrawPartBasicMenuBackground(1, 1, 14, 6);
+        this.SelectedPlayer = -1;
+        this.SelectedButton = -1;
+        this.Boxes = [];
+        this.LoadButtons();
     }
 
     LoadButtons() {
