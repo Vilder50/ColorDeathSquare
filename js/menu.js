@@ -617,7 +617,8 @@ class OptionMenu extends Menu {
         this.Buttons.push(new Button(810, 410, 140, 60, GameState.RobotOption ?  "#00ff00" : "#909090", GameState.RobotOption ? "#aaffaa" : "#dddddd", "ON", 13));
         this.Buttons.push(new Button(1050, 410, 140, 60, !GameState.RobotOption ?  "#ff0000" : "#909090", !GameState.RobotOption ? "#ffaaaa" : "#dddddd", "OFF", 14));
         this.Buttons.push(new Button(810, 570, 140, 60, GameState.TrapOption ? "#00ff00" : "#909090", GameState.TrapOption ? "#aaffaa" : "#dddddd", "ON", 15));
-        this.Buttons.push(new Button(1050, 570, 140, 60, !GameState.TrapOption ?  "#ff0000" : "#909090", !GameState.TrapOption ? "#ffaaaa" : "#dddddd", "OFF", 16));
+        this.Buttons.push(new Button(1050, 570, 140, 60, !GameState.TrapOption ? "#ff0000" : "#909090", !GameState.TrapOption ? "#ffaaaa" : "#dddddd", "OFF", 16));
+        this.Buttons.push(new Button(80, 80, 240, 80, !GameState.TrapOption ? "#ff0000" : "#909090", !GameState.TrapOption ? "#ffaaaa" : "#dddddd", "Fullscreen", 17));
     }
 
     ClickedButton(id) {
@@ -643,6 +644,13 @@ class OptionMenu extends Menu {
                 break;
             case 16:
                 this.ChangeTrapOption(false);
+                break;
+            case 17:
+                if (1 >= outerHeight - innerHeight) {
+                    document.exitFullscreen();
+                } else {
+                    GameState.RawCanvas.requestFullscreen();
+                }
                 break;
             default:
                 if (id >= 3 && id <= 7) {

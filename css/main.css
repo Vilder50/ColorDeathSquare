@@ -23,14 +23,12 @@ header h1 {
 
 
 /*Game*/
-main {
-    margin: 10px 0;
-}
-
 #ColorDeathSquare {
     height: 80vh;
     display: block;
     margin: 0 auto;
+    background: white;
+    padding: 10px;
 }
 
 #ColorDeathSquareExtra{
