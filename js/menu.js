@@ -117,9 +117,15 @@ class Menu {
         for (let i = 0; i < this.Buttons.length; i++) {
             this.Buttons[i].Draw();
         }
+
+        this.DrawExtraLast();
     }
 
     DrawExtra() {
+
+    }
+
+    DrawExtraLast() {
 
     }
 
@@ -686,7 +692,7 @@ class HelpMenu extends Menu {
         }
     }
 
-    DrawExtra() {
+    DrawExtraLast() {
         GameState.Canvas.font = "20px Arial";
         GameState.Canvas.fillStyle = "#000000";
         GameState.Canvas.textAlign = "center";
