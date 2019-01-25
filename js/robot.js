@@ -10,15 +10,11 @@ class Robot extends Player {
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
         if (this.Difficulty == 4 && this.Points >= 20 && GameState.PlayerAt(this.ID, locationX, locationY, 0, true)) {
-            this.Points -= 20;
-            GameState.LoadedMenu.Map.ColorTile(locationX, locationY, this.ID);
-            GameState.LoadedMenu.Map.PlaceTrap(locationX, locationY);
+            this.PlaceTrap(locationX, locationY, false);
         }
 
         if ((this.Points >= 50 && this.Difficulty == 4) || (this.Points >= 40 && this.Difficulty <= 3) || (this.Points >= 25 && this.Difficulty == 0)) {
-            this.Points -= 20;
-            GameState.LoadedMenu.Map.ColorTile(locationX, locationY, this.ID);
-            GameState.LoadedMenu.Map.PlaceTrap(locationX, locationY);
+            this.PlaceTrap(locationX, locationY, false);
         }
     }
 
@@ -113,9 +109,7 @@ class Robot extends Player {
                 }
 
                 if (possibleDirection.length == 0) {
-                    if (trapOut && this.Points >= 30) {
-                        this.Points -= 30;
-                        this.Shielding = 3000;
+                    if (trapOut && this.UseShield()) {
                         return;
                     } else {
                         if (spreads.length == 0) {

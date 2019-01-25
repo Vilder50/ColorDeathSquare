@@ -28,19 +28,14 @@
             }
         }
 
-        if (GameState.KeyStates[this.Keys[4]] === false && this.PowerPress <= 3 && this.PowerPress >= 1 && this.Points >= 20) {
-            this.Points -= 20;
-            if (GameState.LoadedMenu.Map.Tiles[this.PowerX][this.PowerY].From === this.ID) {
-                GameState.LoadedMenu.Map.PlaceTrap(this.PowerX, this.PowerY);
-            } else {
-                GameState.LoadedMenu.Map.ColorTile(Math.round(this.X / 1000), Math.round(this.Y / 1000), this.ID);
-                GameState.LoadedMenu.Map.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000));
+        if (GameState.KeyStates[this.Keys[4]] === false && this.PowerPress <= 3 && this.PowerPress >= 1) {
+            if (!this.PlaceTrap(this.PowerX, this.PowerY, true)) {
+                this.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000), false);
             }
         }
 
-        if (this.PowerPress == 4 && this.Points >= 30 && this.Shielding == 0) {
-            this.Points -= 30;
-            this.Shielding = 3000;
+        if (this.PowerPress == 4) {
+            this.UseShield();
         }
 
         if (this.PowerPress == 4) {
@@ -198,10 +193,13 @@
 
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
-        if (this.PowerPress == 0 || this.PowerPress >= 4) {
-            if (this.Trapped(locationX, locationY)) {
-                return;
-            }
+        if (this.PowerPress >= 1 && this.PowerPress >= 3) {
+            locationX = this.PowerX;
+            locationY = this.PowerY;
+        }
+
+        if (this.Trapped(locationX, locationY)) {
+            return;
         }
 
         //Points
@@ -273,6 +271,10 @@
         this.Dead = true;
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
+        if (this.PowerPress >= 1 && this.PowerPress >= 3) {
+            locationX = this.PowerX;
+            locationY = this.PowerY;
+        }
         GameState.LoadedMenu.Particles.push(new DeathMarker(locationX, locationY, "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")", killer));
         for (let i = 0; i < 50; i++) {
             let useColor = null;
@@ -338,5 +340,26 @@
         }
 
         GameState.Canvas.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
+    UseShield() {
+        if (this.Points >= 30 && this.Shielding == 0) {
+            this.Points -= 30;
+            this.Shielding = 3000;
+            return true;
+        }
+
+        return false;
+    }
+
+    PlaceTrap(x, y, hasToOwnTile) {
+        if (this.Points >= 20 && (!hasToOwnTile || GameState.LoadedMenu.Map.Tiles[x][y].From == this.ID) && GameState.LoadedMenu.Map.Tiles[x][y].State == 0) {
+            this.Points -= 20;
+            GameState.LoadedMenu.Map.ColorTile(x, y, this.ID);
+            GameState.LoadedMenu.Map.PlaceTrap(x, y);
+            return true;
+        }
+
+        return false;
     }
 }
