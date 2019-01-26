@@ -50,7 +50,7 @@
     }
 
     Move() {
-        let overrideAble = false
+        let overrideAble = false;
         for (let i = 0; i < 4; i++) {
             if (GameState.KeyStates[this.Keys[i]] === true && (!this.Moving() || overrideAble) && this.CanMove(i)) {
                 if (this.LastDirection === i) {
@@ -287,7 +287,7 @@
             GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.cos(direction) * (Math.random() * 0.5 + 2.5), Math.sin(direction) * (Math.random() * 0.5 + 2.5), 0.2 + Math.random() * 0.2, useColor, GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         }
     }
-
+    
     Reset() {
         this.MotionX = 0;
         this.MotionY = 0;

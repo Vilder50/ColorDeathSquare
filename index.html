@@ -14,7 +14,7 @@
 <body onkeydown="KeyPress(event)" onkeyup="KeyUp(event)">
     <header><h1>Color Death Square</h1></header>
     <main>
-        <canvas id="ColorDeathSquare" width="1280" height="720" onmousemove="MouseMove(event)" onclick="Clicked(event)"></canvas>
+        <canvas id="ColorDeathSquare" width="1280" height="720" onmousemove="MouseMove(event)" onmousedown="Clicked(event)" onmouseup="Unclicked(event)"></canvas>
         <canvas id="ColorDeathSquareExtra" width="1280" height="720"></canvas>
     </main>
     <footer>
@@ -26,6 +26,7 @@
     <script src="js/player.js"></script>
     <script src="js/robot.js"></script>
     <script src="js/map.js"></script>
+    <script src="js/online.js"></script>
     <script src="js/state.js"></script>
     <script src="js/main.js"></script>
 </body>

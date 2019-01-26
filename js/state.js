@@ -20,6 +20,9 @@ class State {
 
         this.Wins = { };
         this.Kills = { };
+
+        this.Socket = null;
+        this.ConnectionCode = null;
     }
 
     Ready() {
@@ -101,6 +104,10 @@ class State {
 
     Clicked() {
         this.LoadedMenu.Click(this.MouseX, this.MouseY);
+    }
+
+    Unclicked() {
+        this.LoadedMenu.Unclick(this.MouseX, this.MouseY);
     }
 
     Draw() {

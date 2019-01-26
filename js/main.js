@@ -33,3 +33,7 @@ function MouseMove(event) {
 function Clicked(event) {
     GameState.Clicked();
 }
+
+function Unclicked(event) {
+    GameState.Unclicked();
+}

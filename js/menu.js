@@ -89,6 +89,19 @@ class Menu {
         }
     }
 
+    Unclick(x, y) {
+        for (let i = 0; i < this.Buttons.length; i++) {
+            if (this.Buttons[i].Hovering(x, y)) {
+                this.UnclickedButton(this.Buttons[i].ID);
+                return;
+            }
+        }
+    }
+
+    UnclickedButton(id) {
+
+    }
+
     ClickedButton(id) {
 
     }
@@ -138,8 +151,20 @@ class MainMenu extends Menu {
     constructor() {
         super();
 
-        this.Buttons = [new Button(480, 400, 320, 80, "#00ff00", "#aaffaa", "Play", 1), new Button(560, 560, 160, 80, "#ffff00", "#ffffaa", "Players", 2), new Button(80, 560, 160, 80, "#ff0000", "#ffaaaa", "Options", 3), new Button(1040, 560, 160, 80, "#00ffff", "#aaffff", "Help", 4)];
+        this.Buttons = [new Button(480, 400, 320, 80, "#00ff00", "#aaffaa", "Play", 1),
+            new Button(400, 560, 160, 80, "#ffff00", "#ffffaa", "Players", 2),
+            new Button(720, 560, 160, 80, "#ff0000", "#ffaaaa", "Options", 3),
+            new Button(1040, 560, 160, 80, "#00ffff", "#aaffff", "Help", 4)];
 
+        if (GameState.ConnectionCode != null) {
+            this.Boxes = [new Box(80, 80, 1120, 80, "#ffffff", "Room:", false)];
+            for (let i = 0; i < 10; i++) {
+                this.Boxes.push(new Box(250 + i * 80, 90, 60, 60, GameState.CreateColorString(GameState.GetColor(GameState.ConnectionCode[i])), "", true));
+            }
+            this.Buttons.push(new Button(80, 560, 160, 80, "#ff00ff", "#ffaaff", "End Room", 6));
+        } else {
+            this.Buttons.push(new Button(80, 560, 160, 80, "#ff00ff", "#ffaaff", "Online", 5));
+        }
         this.DrawBasicMenuBackground();
     }
 
@@ -156,6 +181,15 @@ class MainMenu extends Menu {
                 break;
             case 4:
                 GameState.LoadedMenu = new HelpMenu();
+                break;
+            case 5:
+                GameState.LoadedMenu = new TryConnectMenu();
+                break;
+            case 6:
+                GameState.ConnectionCode = null;
+                GameState.Socket.send('close room');
+                GameState.Socket = null;
+                GameState.LoadedMenu = new MainMenu();
                 break;
         }
     }
@@ -287,11 +321,13 @@ class PlayerScreen extends Menu {
             let player = GameState.Players[this.SelectedPlayer];
 
             if (!(player instanceof Robot)) {
-                this.Buttons.push(new Button(800, 330, 60, 60, this.SelectedButton == 0 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[0]), 11));
-                for (let i = 0; i < 3; i++) {
-                    this.Buttons.push(new Button(720 + i * 80, 410, 60, 60, this.SelectedButton == 1 + i ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[i + 1]), 12 + i));
+                if (!(player instanceof ConnectedPlayer)) {
+                    this.Buttons.push(new Button(800, 330, 60, 60, this.SelectedButton == 0 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[0]), 11));
+                    for (let i = 0; i < 3; i++) {
+                        this.Buttons.push(new Button(720 + i * 80, 410, 60, 60, this.SelectedButton == 1 + i ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[i + 1]), 12 + i));
+                    }
+                    this.Buttons.push(new Button(560, 410, 140, 60, this.SelectedButton == 4 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[4]), 15));
                 }
-                this.Buttons.push(new Button(560, 410, 140, 60, this.SelectedButton == 4 ? "#cccccc" : "#909090", "#dddddd", this.KeyText(player.Keys[4]), 15));
             } else {
                 for (let i = 0; i < 5; i++) {
                     this.Buttons.push(new Button(560 + i * 80, 330, 70, 60, player.Difficulty == i ? GameState.CreateColorString(GameState.GetColor(i)) : "#909090", player.Difficulty == i ? GameState.WhitenColor(GameState.GetColor(i), 0.7) : "#dddddd", (i + 1), 16 + i));
