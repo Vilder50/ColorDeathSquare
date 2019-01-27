@@ -181,6 +181,7 @@ class Connectedmenu extends Menu {
         }
 
         if (id == 7) {
+            GameState.Socket.close();
             GameState.Socket = null;
             GameState.LoadedMenu = new MainMenu();
         }

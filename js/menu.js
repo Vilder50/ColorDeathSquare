@@ -187,6 +187,7 @@ class MainMenu extends Menu {
                 break;
             case 6:
                 GameState.ConnectionCode = null;
+                GameState.Socket.close()
                 GameState.Socket.send('close');
                 GameState.Socket = null;
                 for (let i = 0; i < GameState.Players.length; i++) {
