@@ -307,7 +307,7 @@ class PlayerScreen extends Menu {
         for (let i = this.ShownPage * 6; i < Math.min(GameState.Players.length, this.ShownPage * 6 + 6); i++) {
             let color = GameState.CreateColorString(GameState.GetColor(GameState.Players[i].ID));
             let hoverColor = GameState.WhitenColor(GameState.GetColor(GameState.Players[i].ID), 0.7);
-            this.Buttons.push(new Button(160 + (i % 6) * 160 + Math.floor((i % 6) / 3) * 80, 80, 80, 80, color, hoverColor, (GameState.Players[i] instanceof Robot) ? "[*_*]" : "(o_o)", 100 + i));
+            this.Buttons.push(new Button(160 + (i % 6) * 160 + Math.floor((i % 6) / 3) * 80, 80, 80, 80, color, hoverColor, (GameState.Players[i] instanceof Robot) ? "[*_*]" : ((GameState.Players[i] instanceof ConnectedPlayer) ? "{@_@}" : "(o_o)"), 100 + i));
         }
 
         if (this.SelectedPlayer != -1) {
