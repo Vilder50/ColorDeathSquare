@@ -6,7 +6,7 @@ class TryConnectMenu extends Menu {
         this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "Connecting...", true)];
         this.Buttons = [new Button(480, 480, 320, 80, "#ff0000", "#ffaaaa", "Cancel", 1)];
         this.WrittenCode = [];
-        GameState.Socket = new WebSocket("ws://color-death-square.herokuapp.com/");
+        GameState.Socket = new WebSocket("wss://color-death-square.herokuapp.com/");
 
         GameState.Socket.onopen = () => {
             this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "", true)];
