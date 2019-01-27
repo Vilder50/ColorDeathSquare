@@ -51,7 +51,6 @@ class TryConnectMenu extends Menu {
                         GameState.LoadedMenu = new MainMenu();
                         GameState.Socket.onmessage = (e) => {
                             let message = e.data;
-                            console.log(message);
                             if (message.startsWith("Player:")) {
                                 let senderID = Number(message.substring(7, message.indexOf(",")));
                                 for (let i = 0; i < GameState.Players.length; i++) {
@@ -138,7 +137,6 @@ class Connectedmenu extends Menu {
 
         GameState.Socket.onmessage = (e) => {
             let message = e.data;
-            console.log(message);
             let buttonColor = GameState.CreateColorString(this.Color);
             let hoverColor = GameState.WhitenColor(this.Color, 0.7);
             if (message == "alive") {
