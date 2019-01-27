@@ -182,28 +182,29 @@ class Connectedmenu extends Menu {
         if (this.Alive) {
             for (let i = 0; i < 5; i++) {
                 if (GameState.KeyStates[this.Controls[i]] === true) {
-                    if (!this.HoldButtons[i]) {
-                        this.HoldButtons[i] = true;
-                        if (i < 4) {
-                            GameState.Socket.send("Move:s" + i);
-                        } else {
-                            this.Powering++;
-                            if (this.Powering > 3) {
-                                GameState.Socket.send("Move:shield");
-                            }
+                    if (!this.HoldButtons[i] && i < 4) {
+                        GameState.Socket.send("Move:s" + i);
+                    }
+                    if (i == 4) {
+                        this.Powering++;
+                        if (this.Powering == 4) {
+                            GameState.Socket.send("Move:shield");
                         }
                     }
+                    this.HoldButtons[i] = true;
                 } else {
                     if (this.HoldButtons[i]) {
                         this.HoldButtons[i] = false;
                         if (i < 4) {
                             GameState.Socket.send("Move:e" + i);
                         } else {
-                            this.Powering = 0;
                             if (this.Powering <= 3) {
                                 GameState.Socket.send("Move:trap");
                             }
                         }
+                    }
+                    if (i == 4) {
+                        this.Powering = 0;
                     }
                 }
             }
