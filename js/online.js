@@ -55,7 +55,12 @@ class TryConnectMenu extends Menu {
                                 let senderID = Number(message.substring(7, message.indexOf(",")));
                                 for (let i = 0; i < GameState.Players.length; i++) {
                                     if (GameState.Players[i] instanceof ConnectedPlayer && senderID == GameState.Players[i].ConnectionID) {
-                                        GameState.Players[i].DoCommand(message.substring(message.indexOf(",") + 1));
+                                        message = message.substring(message.indexOf(",") + 1);
+                                        if (message == "left") {
+                                            GameState.Players.splice(i, 1);
+                                        } else {
+                                            GameState.Players[i].DoCommand(message);
+                                        }
                                         break;
                                     }
                                 }
@@ -132,7 +137,6 @@ class Connectedmenu extends Menu {
 
         GameState.Socket.onmessage = (e) => {
             let message = e.data;
-            console.log(message);
             let buttonColor = GameState.CreateColorString(this.Color);
             let hoverColor = GameState.WhitenColor(this.Color, 0.7);
             if (message == "alive") {
@@ -228,6 +232,7 @@ class ConnectedPlayer extends Player {
     constructor(id,connectionID) {
         super([], id);
         this.ConnectionID = connectionID;
+        this.Dead = true;
     }
 
     ExtraReset() {

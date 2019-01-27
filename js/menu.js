@@ -231,6 +231,9 @@ class PlayerScreen extends Menu {
                     this.RemvoingPlayer = !this.RemvoingPlayer;
                     this.Buttons[1].Text = this.RemvoingPlayer ? "Removing..." : "Remove Player";
                 } else {
+                    if (GameState.Players[this.SelectedPlayer] instanceof ConnectedPlayer) {
+                        GameState.Socket.send("Player:" + GameState.Players[this.SelectedPlayer].ConnectionID + ",kick");
+                    }
                     GameState.Players.splice(this.SelectedPlayer, 1);
                     this.DeselectPlayer();
                 }
@@ -253,6 +256,9 @@ class PlayerScreen extends Menu {
                 if (id >= 100) {
                     let playerLocation = id - 100;
                     if (this.RemvoingPlayer) {
+                        if (GameState.Players[playerLocation] instanceof ConnectedPlayer) {
+                            GameState.Socket.send("Player:" + GameState.Players[playerLocation].ConnectionID + ",kick");
+                        }
                         GameState.Players.splice(playerLocation, 1);
                         this.LoadButtons();
                     } else {
