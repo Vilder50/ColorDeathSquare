@@ -187,7 +187,7 @@ class MainMenu extends Menu {
                 break;
             case 6:
                 GameState.ConnectionCode = null;
-                GameState.Socket.send('close room');
+                GameState.Socket.send('close');
                 GameState.Socket = null;
                 GameState.LoadedMenu = new MainMenu();
                 break;

@@ -132,26 +132,29 @@ class Connectedmenu extends Menu {
 
         GameState.Socket.onmessage = (e) => {
             let message = e.data;
+            console.log(message);
             let buttonColor = GameState.CreateColorString(this.Color);
             let hoverColor = GameState.WhitenColor(this.Color, 0.7);
             if (message == "alive") {
                 this.Buttons = [new Button(400, 80, 240, 240, buttonColor, hoverColor, "^", 1),
-                    new Button(720, 400, 240, 240, buttonColor, hoverColor, ">", 4),
-                    new Button(80, 400, 240, 240, buttonColor, hoverColor, "<", 2),
-                    new Button(400, 400, 240, 240, buttonColor, hoverColor, "V", 3),
-                    new Button(1040, 80, 160, 240, buttonColor, hoverColor, "Trap", 5),
-                    new Button(1040, 400, 160, 240, buttonColor, hoverColor, "Shield", 6),
-                    new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
+                new Button(720, 400, 240, 240, buttonColor, hoverColor, ">", 4),
+                new Button(80, 400, 240, 240, buttonColor, hoverColor, "<", 2),
+                new Button(400, 400, 240, 240, buttonColor, hoverColor, "V", 3),
+                new Button(1040, 80, 160, 240, buttonColor, hoverColor, "Trap", 5),
+                new Button(1040, 400, 160, 240, buttonColor, hoverColor, "Shield", 6),
+                new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
                 this.Alive = true;
             } else if (message == "dead") {
                 this.Buttons = [new Button(400, 80, 240, 240, lockedColor, lockedColor, "^", 1),
-                    new Button(720, 400, 240, 240, lockedColor, lockedColor, ">", 4),
-                    new Button(80, 400, 240, 240, lockedColor, lockedColor, "<", 2),
-                    new Button(400, 400, 240, 240, lockedColor, lockedColor, "V", 3),
-                    new Button(1040, 80, 160, 240, lockedColor, lockedColor, "Trap", 5),
-                    new Button(1040, 400, 160, 240, lockedColor, lockedColor, "Shield", 6),
-                    new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
+                new Button(720, 400, 240, 240, lockedColor, lockedColor, ">", 4),
+                new Button(80, 400, 240, 240, lockedColor, lockedColor, "<", 2),
+                new Button(400, 400, 240, 240, lockedColor, lockedColor, "V", 3),
+                new Button(1040, 80, 160, 240, lockedColor, lockedColor, "Trap", 5),
+                new Button(1040, 400, 160, 240, lockedColor, lockedColor, "Shield", 6),
+                new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
                 this.Alive = false;
+            } else if (message == "kick") {
+                this.ClickedButton(7);
             }
         }
     }
@@ -165,16 +168,17 @@ class Connectedmenu extends Menu {
                 case 6:
                     GameState.Socket.send("Move:shield");
                     break;
-                case 7:
-                    GameState.Socket = null;
-                    GameState.LoadedMenu = new MainMenu();
-                    break;
                 default:
                     if (id <= 4) {
                         GameState.Socket.send("Move:s" + (id - 1));
                     }
                     break;
             }
+        }
+
+        if (id == 7) {
+            GameState.Socket = null;
+            GameState.LoadedMenu = new MainMenu();
         }
     }
 
