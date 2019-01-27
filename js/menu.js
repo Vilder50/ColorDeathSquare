@@ -462,6 +462,9 @@ class GameMenu extends Menu {
         switch (id) {
             case 1:
                 GameState.LoadedMenu = new MainMenu();
+                if (GameState.Socket != null) {
+                    GameState.Socket.send("End game");
+                }
                 break;
         }
     }
@@ -494,6 +497,10 @@ class GameMenu extends Menu {
                     }
                 }
             }
+        }
+
+        if (GameState.Socket != null) {
+            GameState.Socket.send("New game");
         }
     }
 

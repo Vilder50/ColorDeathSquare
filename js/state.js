@@ -87,7 +87,7 @@ class State {
                 newColor[j] = newColor[j] * whitenPercent;
             }
         }
-        if (returnData == undefined) {
+        if (returnData == undefined || !returnData) {
             return this.CreateColorString(newColor);
         } else {
             return newColor;

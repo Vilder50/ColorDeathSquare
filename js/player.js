@@ -286,6 +286,12 @@
             let direction = Math.random() * Math.PI * 2;
             GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.cos(direction) * (Math.random() * 0.5 + 2.5), Math.sin(direction) * (Math.random() * 0.5 + 2.5), 0.2 + Math.random() * 0.2, useColor, GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         }
+
+        this.ExtraKill();
+    }
+
+    ExtraKill() {
+
     }
     
     Reset() {
