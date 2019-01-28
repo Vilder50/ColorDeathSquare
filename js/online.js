@@ -58,6 +58,9 @@ class TryConnectMenu extends Menu {
                                         message = message.substring(message.indexOf(",") + 1);
                                         if (message == "left") {
                                             GameState.Players.splice(i, 1);
+                                            if (GameState.LoadedMenu instanceof PlayerScreen) {
+                                                GameState.LoadedMenu.LoadButtons();
+                                            }
                                         } else {
                                             GameState.Players[i].DoCommand(message);
                                         }
@@ -66,7 +69,10 @@ class TryConnectMenu extends Menu {
                                 }
                             } else if (message.startsWith("New:")) {
                                 let newID = Number(message.substring(4));
-                                GameState.Players.push(new ConnectedPlayer(0,newID));
+                                GameState.Players.push(new ConnectedPlayer(0, newID));
+                                if (GameState.LoadedMenu instanceof PlayerScreen) {
+                                    GameState.LoadedMenu.LoadButtons();
+                                }
                             }
                         }
                     } else {
