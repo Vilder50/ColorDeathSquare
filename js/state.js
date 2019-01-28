@@ -23,6 +23,7 @@ class State {
 
         this.Socket = null;
         this.ConnectionCode = null;
+        this.ConnectionPingCooldown = 0;
     }
 
     Ready() {
@@ -97,6 +98,13 @@ class State {
     Update() {
         GameState.UpdateNow();
         setTimeout(GameState.Update, 40);
+        if (GameState.Socket != null) {
+            GameState.ConnectionPingCooldown += 40;
+            if (GameState.ConnectionPingCooldown >= 30000) {
+                GameState.Socket.send("ping");
+                GameState.ConnectionPingCooldown = 0;
+            }
+        }
     }
     UpdateNow() {
         this.LoadedMenu.Update(this.MouseX, this.MouseY);
