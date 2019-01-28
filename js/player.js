@@ -193,7 +193,7 @@
 
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
-        if (this.PowerPress >= 1 && this.PowerPress >= 3) {
+        if (this.PowerPress >= 1 && this.PowerPress <= 3) {
             locationX = this.PowerX;
             locationY = this.PowerY;
         }
@@ -271,7 +271,7 @@
         this.Dead = true;
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
-        if (this.PowerPress >= 1 && this.PowerPress >= 3) {
+        if (this.PowerPress >= 1 && this.PowerPress <= 3) {
             locationX = this.PowerX;
             locationY = this.PowerY;
         }
