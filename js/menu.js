@@ -274,9 +274,8 @@ class PlayerScreen extends Menu {
                     GameState.Players[this.SelectedPlayer].ID = id - 5;
                     GameState.Players[this.SelectedPlayer].Color = GameState.GetColor(GameState.Players[this.SelectedPlayer].ID);
                     if (GameState.Players[this.SelectedPlayer] instanceof ConnectedPlayer) {
-                        GameState.Socket.send("Player:" + GameState.Players[this.SelectedPlayer].ConnectionID + ",color," + GameState.CreateColorString(GameState.Players[this.SelectedPlayer].Color));
+                        GameState.Socket.send("Player:" + GameState.Players[this.SelectedPlayer].ConnectionID + ",color," + GameState.Players[this.SelectedPlayer].Color);
                     }
-                    GameState.Players.splice(playerLocation, 1);
                     this.LoadButtons();
                     break;
                 }

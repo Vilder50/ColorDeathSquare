@@ -119,7 +119,7 @@ class Connectedmenu extends Menu {
         super();
         this.DrawBasicMenuBackground();
         this.Boxes = [];
-        this.Color = [0, 255, 0];
+        this.Color = [0, 255, 255];
 
         this.HoldButtons = [false, false, false, false, false];
         this.Controls = ["arrowup", "arrowleft", "arrowdown", "arrowright", " "];
@@ -135,30 +135,41 @@ class Connectedmenu extends Menu {
             new Button(1040, 400, 160, 240, lockedColor, lockedColor, "Shield", 6),
             new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
 
-        GameState.Socket.onmessage = (e) => {
-            let message = e.data;
-            let buttonColor = GameState.CreateColorString(this.Color);
-            let hoverColor = GameState.WhitenColor(this.Color, 0.7);
-            if (message == "alive") {
-                this.Buttons = [new Button(400, 80, 240, 240, buttonColor, hoverColor, "^", 1),
-                new Button(720, 400, 240, 240, buttonColor, hoverColor, ">", 4),
-                new Button(80, 400, 240, 240, buttonColor, hoverColor, "<", 2),
-                new Button(400, 400, 240, 240, buttonColor, hoverColor, "V", 3),
-                new Button(1040, 80, 160, 240, buttonColor, hoverColor, "Trap", 5),
-                new Button(1040, 400, 160, 240, buttonColor, hoverColor, "Shield", 6),
-                new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
-                this.Alive = true;
-            } else if (message == "dead") {
-                this.Buttons = [new Button(400, 80, 240, 240, lockedColor, lockedColor, "^", 1),
-                new Button(720, 400, 240, 240, lockedColor, lockedColor, ">", 4),
-                new Button(80, 400, 240, 240, lockedColor, lockedColor, "<", 2),
-                new Button(400, 400, 240, 240, lockedColor, lockedColor, "V", 3),
-                new Button(1040, 80, 160, 240, lockedColor, lockedColor, "Trap", 5),
-                new Button(1040, 400, 160, 240, lockedColor, lockedColor, "Shield", 6),
-                new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
-                this.Alive = false;
-            } else if (message == "kick") {
-                this.ClickedButton(7);
+        GameState.Socket.onmessage = (e) => { this.SocketMessage(e) };
+    }
+
+    SocketMessage(e) {
+        let message = e.data;
+        let buttonColor = GameState.CreateColorString(this.Color);
+        let hoverColor = GameState.WhitenColor(this.Color, 0.7);
+        let lockedColor = GameState.WhitenColor(this.Color, 0.9);
+        if (message == "alive") {
+            this.Buttons = [new Button(400, 80, 240, 240, buttonColor, hoverColor, "^", 1),
+            new Button(720, 400, 240, 240, buttonColor, hoverColor, ">", 4),
+            new Button(80, 400, 240, 240, buttonColor, hoverColor, "<", 2),
+            new Button(400, 400, 240, 240, buttonColor, hoverColor, "V", 3),
+            new Button(1040, 80, 160, 240, buttonColor, hoverColor, "Trap", 5),
+            new Button(1040, 400, 160, 240, buttonColor, hoverColor, "Shield", 6),
+            new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
+            this.Alive = true;
+        } else if (message == "dead") {
+            this.Buttons = [new Button(400, 80, 240, 240, lockedColor, lockedColor, "^", 1),
+            new Button(720, 400, 240, 240, lockedColor, lockedColor, ">", 4),
+            new Button(80, 400, 240, 240, lockedColor, lockedColor, "<", 2),
+            new Button(400, 400, 240, 240, lockedColor, lockedColor, "V", 3),
+            new Button(1040, 80, 160, 240, lockedColor, lockedColor, "Trap", 5),
+            new Button(1040, 400, 160, 240, lockedColor, lockedColor, "Shield", 6),
+            new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
+            this.Alive = false;
+        } else if (message == "kick") {
+            this.ClickedButton(7);
+        } else if (message.startsWith("color")) {
+            message = message.substring(message.indexOf(",") + 1);
+            this.Color = JSON.parse("[" + message + "]");
+            if (this.Alive) {
+                this.SocketMessage({ data: "alive" });
+            } else {
+                this.SocketMessage({ data: "dead" });
             }
         }
     }
