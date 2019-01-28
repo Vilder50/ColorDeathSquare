@@ -26,14 +26,15 @@ class TryConnectMenu extends Menu {
             case 2:
                 this.WrittenCode = [];
                 this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "Write room code", "TopCenter"), new Box(160, 120, 940, 80, "#ffffff", "", false)];
-                this.Buttons = [new Button(160, 480, 240, 80, "#ff0000", "#ffaaaa", "Cancel", 1),
-                    new Button(480, 480, 320, 80, "#ff8000", GameState.WhitenColor(GameState.GetColor(3), 0.7), "Reset", 4),
-                    new Button(880, 480, 240, 80, "#70d070", "#70d070", "Enter", 5)];
+                this.Buttons = [new Button(160, 480, 180, 80, "#ff0000", "#ffaaaa", "Cancel", 1),
+                    new Button(420, 480, 180, 80, "#ff8000", GameState.WhitenColor(GameState.GetColor(3), 0.7), "Reset", 4),
+                    new Button(940, 480, 180, 80, "#70d070", "#70d070", "Enter", 5),
+                    new Button(680, 480, 180, 80, "#E0BB00", "#E0BB00", "Remove", 6)];
                 for (let i = 0; i < 10; i++) {
-                    this.Boxes.push(new Box(250 + i * 80, 130, 60, 60, "#ffffff", "", false));
+                    this.Boxes.push(new Box(250 + i * 80, 130, 60, 60, "#ffffff", "", true));
                 }
                 for (let i = 0; i < 6; i++) {
-                    this.Buttons.push(new Button(160 + i * 160 + Math.floor(i / 3) * 80, 320, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.WhitenColor(GameState.GetColor(i), 0.7), "", 100 + i));
+                    this.Buttons.push(new Button(160 + i * 160 + Math.floor(i / 3) * 80, 320, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.WhitenColor(GameState.GetColor(i), 0.7), (i + 1), 100 + i));
                 }
                 break;
             case 3:
@@ -85,9 +86,12 @@ class TryConnectMenu extends Menu {
                 this.WrittenCode = [];
                 for (let i = 0; i < 10; i++) {
                     this.Boxes[i + 2].Color = "#ffffff";
+                    this.Boxes[i + 2].Text = "";
                 }
                 this.Buttons[2].Color = "#70d070";
                 this.Buttons[2].HoverColor = "#70d070";
+                this.Buttons[3].Color = "#E0BB00";
+                this.Buttons[3].HoverColor = "#E0BB00";
                 break;
             case 5:
                 if (this.WrittenCode.length == 10) {
@@ -105,17 +109,51 @@ class TryConnectMenu extends Menu {
                     }
                 }
                 break;
+            case 6:
+                if (this.WrittenCode.length >= 1) {
+                    this.Boxes[this.WrittenCode.length + 1].Color = "#ffffff";
+                    this.Boxes[this.WrittenCode.length + 1].Text = "";
+                    this.WrittenCode.splice(this.WrittenCode.length - 1, 1);
+                    this.Buttons[2].Color = "#70d070";
+                    this.Buttons[2].HoverColor = "#70d070";
+                    if (this.WrittenCode.length == 0) {
+                        this.Buttons[3].Color = "#E0BB00";
+                        this.Buttons[3].HoverColor = "#E0BB00";
+                    }
+                }
+                break;
             default:
                 if (id >= 100 && id <= 106 && this.WrittenCode.length < 10) {
+                    if (this.WrittenCode.length == 0) {
+                        this.Buttons[3].Color = "#ffff00";
+                        this.Buttons[3].HoverColor = "#ffffaa";
+                    }
                     let button = id - 100;
                     this.WrittenCode.push(button);
                     this.Boxes[this.WrittenCode.length + 1].Color = GameState.CreateColorString(GameState.GetColor(button));
+                    this.Boxes[this.WrittenCode.length + 1].Text = button + 1;
                     if (this.WrittenCode.length >= 10) {
                         this.Buttons[2].Color = "#00ff00";
                         this.Buttons[2].HoverColor = "#aaffaa";
                     }
                 }
                 break;
+        }
+    }
+
+    UpdateExtra() {
+        if (this.Boxes.length >= 7) {
+            for (let i = 0; i < 6; i++) {
+                if (GameState.KeyStates[(i + 1).toString()] === true) {
+                    this.ClickedButton(100 + i);
+                    GameState.KeyStates[(i + 1).toString()] = false;
+                }
+            }
+
+            if (GameState.KeyStates["backspace"] === true) {
+                this.ClickedButton(6);
+                GameState.KeyStates["backspace"] = false;
+            }
         }
     }
 }

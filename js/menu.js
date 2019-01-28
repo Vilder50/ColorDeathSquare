@@ -159,7 +159,7 @@ class MainMenu extends Menu {
         if (GameState.ConnectionCode != null) {
             this.Boxes = [new Box(80, 80, 1120, 80, "#ffffff", "Room:", false)];
             for (let i = 0; i < 10; i++) {
-                this.Boxes.push(new Box(250 + i * 80, 90, 60, 60, GameState.CreateColorString(GameState.GetColor(GameState.ConnectionCode[i])), "", true));
+                this.Boxes.push(new Box(250 + i * 80, 90, 60, 60, GameState.CreateColorString(GameState.GetColor(GameState.ConnectionCode[i])), (GameState.ConnectionCode[i] + 1), true));
             }
             this.Buttons.push(new Button(80, 560, 160, 80, "#ff00ff", "#ffaaff", "End Room", 6));
         } else {
