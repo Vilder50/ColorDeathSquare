@@ -7,10 +7,11 @@ class TryConnectMenu extends Menu {
         this.Buttons = [new Button(480, 480, 320, 80, "#ff0000", "#ffaaaa", "Cancel", 1)];
         this.WrittenCode = [];
         GameState.Socket = new WebSocket("wss://color-death-square.herokuapp.com/");
+        this.JoinType = "keyboard";
 
         GameState.Socket.onopen = () => {
             this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "", true)];
-            this.Buttons = [new Button(160, 160, 320, 240, "#ffff00", "#ffffaa", "Join", 2), new Button(800, 160, 320, 240, "#00ff00", "#aaffaa", "Host", 3), new Button(480, 480, 320, 80, "#ff0000", "#ffaaaa", "Back to menu", 1)];
+            this.Buttons = [new Button(500, 160, 280, 240, "#ffff00", "#ffffaa", "Join with keyboard only", 2), new Button(160, 160, 280, 240, "#00ffff", "#aaffff", "Join", 7), new Button(840, 160, 280, 240, "#00ff00", "#aaffaa", "Host", 3), new Button(480, 480, 320, 80, "#ff0000", "#ffaaaa", "Back to menu", 1)];
         }
 
         GameState.Socket.onerror = (error) => {
@@ -121,6 +122,10 @@ class TryConnectMenu extends Menu {
                         this.Buttons[3].HoverColor = "#E0BB00";
                     }
                 }
+                break;
+            case 7:
+                this.JoinType = "screen";
+                this.ClickedButton(2);
                 break;
             default:
                 if (id >= 100 && id <= 106 && this.WrittenCode.length < 10) {
