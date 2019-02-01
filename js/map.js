@@ -2,7 +2,7 @@
 
 class Map {
 
-    constructor(width, height, tileSize) {
+    constructor(width, height, tileSize, wallArray) {
         this.Width = width;
         this.Height = height;
         this.Tiles = [];
@@ -13,46 +13,71 @@ class Map {
         width = width * 2 - 1;
         height = height * 2 - 1;
 
-        //Ready up Tiles array
-        for (let x = 0; x < width; x++) {
-            this.Tiles.push(new Array());
-            for (let y = 0; y < height; y++) {
-                this.Tiles[x].push(new Tile());
-            }
-        }
+        if (wallArray == undefined) {
 
-        //Create maze
-        let x = 0;
-        let y = 0;
-        let directions;
-        let backwards = false;
-        this.Tiles[0][0].State = 1;
-        while (true) {
-            directions = [];
-            //Finds ways the maze can go
-            if (y % 2 == 0) {
-                if (x != width - 1 && this.Tiles[x + 1][y].State == 0 && ( x >= width - 2 || this.Tiles[x + 2][y].State == 0)) {
-                    directions.push(0);
-                }
-                if (x != 0 && this.Tiles[x - 1][y].State == 0 && ( x < 2 || this.Tiles[x - 2][y].State == 0)) {
-                    directions.push(2);
+            //Ready up Tiles array
+            for (let x = 0; x < width; x++) {
+                this.Tiles.push(new Array());
+                for (let y = 0; y < height; y++) {
+                    this.Tiles[x].push(new Tile());
                 }
             }
-            if (x % 2 == 0) {
-                if (y != height - 1 && this.Tiles[x][y + 1].State == 0 && (y >= height - 2 || this.Tiles[x][y + 2].State == 0)) {
-                    directions.push(1);
+
+            //Create maze
+            let x = 0;
+            let y = 0;
+            let directions;
+            let backwards = false;
+            this.Tiles[0][0].State = 1;
+            while (true) {
+                directions = [];
+                //Finds ways the maze can go
+                if (y % 2 == 0) {
+                    if (x != width - 1 && this.Tiles[x + 1][y].State == 0 && (x >= width - 2 || this.Tiles[x + 2][y].State == 0)) {
+                        directions.push(0);
+                    }
+                    if (x != 0 && this.Tiles[x - 1][y].State == 0 && (x < 2 || this.Tiles[x - 2][y].State == 0)) {
+                        directions.push(2);
+                    }
                 }
-                if (y != 0 && this.Tiles[x][y - 1].State == 0 && ( y < 2 || this.Tiles[x][y - 2].State == 0)) {
-                    directions.push(3);
+                if (x % 2 == 0) {
+                    if (y != height - 1 && this.Tiles[x][y + 1].State == 0 && (y >= height - 2 || this.Tiles[x][y + 2].State == 0)) {
+                        directions.push(1);
+                    }
+                    if (y != 0 && this.Tiles[x][y - 1].State == 0 && (y < 2 || this.Tiles[x][y - 2].State == 0)) {
+                        directions.push(3);
+                    }
                 }
-            }
-            if (backwards) {
-                //Moving backwards to find a new place to split
-                this.Tiles[x][y].State = 2;
-                if (directions.length >= 1) {
-                    backwards = false;
-                } else {
-                    switch (this.Tiles[x][y].From) {
+                if (backwards) {
+                    //Moving backwards to find a new place to split
+                    this.Tiles[x][y].State = 2;
+                    if (directions.length >= 1) {
+                        backwards = false;
+                    } else {
+                        switch (this.Tiles[x][y].From) {
+                            case 0:
+                                x++;
+                                break;
+                            case 2:
+                                x--;
+                                break;
+                            case 1:
+                                y++;
+                                break;
+                            case 3:
+                                y--;
+                                break;
+                        }
+                    }
+                }
+                if (!backwards) {
+                    //Moving randomly and creates the maze
+                    if (directions.length == 0) {
+                        backwards = true;
+                        continue;
+                    }
+                    let moveIn = directions[Math.floor(Math.random() * directions.length)];
+                    switch (moveIn) {
                         case 0:
                             x++;
                             break;
@@ -66,59 +91,39 @@ class Map {
                             y--;
                             break;
                     }
+                    this.Tiles[x][y].From = moveIn - 2;
+                    if (this.Tiles[x][y].From < 0) {
+                        this.Tiles[x][y].From += 4;
+                    }
+                    this.Tiles[x][y].State = 1;
                 }
-            }
-            if (!backwards) {
-                //Moving randomly and creates the maze
-                if (directions.length == 0) {
-                    backwards = true;
-                    continue;
+
+                if (x == 0 && y == 0) {
+                    break;
                 }
-                let moveIn = directions[Math.floor(Math.random() * directions.length)];
-                switch (moveIn) {
-                    case 0:
-                        x++;
-                        break;
-                    case 2:
-                        x--;
-                        break;
-                    case 1:
-                        y++;
-                        break;
-                    case 3:
-                        y--;
-                        break;
-                }
-                this.Tiles[x][y].From = moveIn - 2;
-                if (this.Tiles[x][y].From < 0) {
-                    this.Tiles[x][y].From += 4;
-                }
-                this.Tiles[x][y].State = 1;
             }
 
-            if (x == 0 && y == 0) {
-                break;
+            //Adds all walls to the walls array
+            for (let y = 0; y < height; y++) {
+                if (y % 2 == 0) {
+                    //Adds an extra wall for easier access to the array's indexes
+                    this.Walls.push(null);
+                }
+                for (let x = (y % 2 == 0 ? 1 : 0); x < width; x += 2) {
+                    this.Walls.push(this.Tiles[x][y].State == 0);
+                }
             }
-        }
 
-        //Adds all walls to the walls array
-        for (let y = 0; y < height; y++) {
-            if (y % 2 == 0) {
-                //Adds an extra wall for easier access to the array's indexes
-                this.Walls.push(null);
+            //Removes random walls from the maze
+            let removeWalls = width * height / 10;
+            for (let i = 0; i < removeWalls; i++) {
+                var removing = Math.floor(Math.random() * this.Walls.length);
+                if (this.Walls[removing] === true) {
+                    this.Walls[removing] = false;
+                }
             }
-            for (let x = (y % 2 == 0 ? 1 : 0); x < width; x += 2) {
-                this.Walls.push(this.Tiles[x][y].State == 0);
-            }
-        }
-
-        //Removes random walls from the maze
-        let removeWalls = width * height / 10;
-        for (let i = 0; i < removeWalls; i++) {
-            var removing = Math.floor(Math.random() * this.Walls.length);
-            if (this.Walls[removing] === true) {
-                this.Walls[removing] = false;
-            }
+        } else {
+            this.Walls = wallArray;
         }
 
         //Creates the correct Tiles array
@@ -130,7 +135,10 @@ class Map {
             }
         }
 
-        //Draw map
+        this.DrawMap();
+    }
+
+    DrawMap() {
         let drawOn = GameState.ExtraRawCanvas.getContext("2d");
         drawOn.clearRect(0, 0, this.TileSize * this.Width, this.TileSize * this.Height);
         for (let x = 0; x < this.Width; x++) {
