@@ -25,11 +25,11 @@ class TryConnectMenu extends Menu {
                 break;
             case 2:
                 this.WrittenCode = [];
-                this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "Write room code", "TopCenter"), new Box(160, 120, 940, 80, "#ffffff", "", false)];
+                this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "Enter room code", "TopCenter"), new Box(160, 120, 940, 80, "#ffffff", "", false)];
                 this.Buttons = [new Button(160, 480, 180, 80, "#ff0000", "#ffaaaa", "Cancel", 1),
                     new Button(420, 480, 180, 80, "#ff8000", GameState.WhitenColor(GameState.GetColor(3), 0.7), "Reset", 4),
-                    new Button(940, 480, 180, 80, "#70d070", "#70d070", "Enter", 5),
-                    new Button(680, 480, 180, 80, "#E0BB00", "#E0BB00", "Remove", 6)];
+                    new Button(940, 480, 180, 80, "#70d070", "#70d070", "Join", 5),
+                    new Button(680, 480, 180, 80, "#E0BB00", "#E0BB00", "Delete", 6)];
                 for (let i = 0; i < 10; i++) {
                     this.Boxes.push(new Box(250 + i * 80, 130, 60, 60, "#ffffff", "", true));
                 }
