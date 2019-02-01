@@ -154,6 +154,11 @@ class TryConnectMenu extends Menu {
                 this.ClickedButton(6);
                 GameState.KeyStates["backspace"] = false;
             }
+
+            if (GameState.KeyStates["enter"] === true) {
+                this.ClickedButton(5);
+                GameState.KeyStates["enter"] = false;
+            }
         }
     }
 }
