@@ -326,7 +326,7 @@ class ConnectedScreenMenu extends GameMenu {
             let width = gameParts[1];
             let height = gameParts[2];
             let walls = [];
-            let playerCoords = [{X:0,Y:0}];
+            let playerCoords = [{ X: 0, Y: 0 }];
             for (let i = 3; i < gameParts.length; i++) {
                 if (state == "w" && gameParts[i] != "p") {
                     //wall format:
@@ -529,6 +529,83 @@ class ShellPlayer extends Player {
 
     Update() {
         this.UpdateMovement();
+    }
+}
+
+class GameUpdates {
+    constructor() {
+        this.Reset();
+    }
+
+    Reset() {
+        this.TileUpdates = [];
+        this.TrapUpdates = [];
+        this.MoveUpdates = "";
+        this.DiedUpdates = "";
+    }
+
+    ColoredTile(x, y, colorID, colorIDBefore) {
+        for (let i = 0; i < this.TileUpdates.length; i++) {
+            if (this.TileUpdates[i].X == x && this.TileUpdates[i].Y == y) {
+                if (this.TileUpdates[i].ColorIDBefore == colorID) {
+                    this.TileUpdates.splice(i, 1);
+                } else {
+                    this.TileUpdates[i].ColorID = colorID;
+                }
+                return;
+            }
+        }
+
+        this.TileUpdates.push({ X: x, Y: y, ColorID: colorID, ColorIDBefore: colorIDBefore });
+    }
+
+    TrapChangedAt(x, y, added) {
+        for (let i = 0; i < this.TrapUpdates.length; i++) {
+            if (this.TrapUpdates[i].X == x && this.TrapUpdates[i].Y == y) {
+                this.TrapUpdates.splice(i, 1);
+                return;
+            }
+        }
+
+        this.TrapUpdates.push([{ X: x, Y: y, Added: added }]);
+    }
+
+    PlayerMoved(playerID, direction, oldX, oldY) {
+        this.MoveUpdates += "," + playerID + "," + direction + "," + oldX + "," + oldY;
+    }
+
+    PlayerDied(playerID, killerPlayerID, x, y) {
+        this.DiedUpdates += "," + playerID + "," + (killerPlayerID != undefined ? killerPlayerID : "-1") + "," + x + "," + y;
+    }
+
+    SendUpdates() {
+        if (GameState.Socket != null && GameState.ConnectionCode != null) {
+            let fullUpdateString = "p";
+            for (let i = 0; i < GameState.Players.length; i++) {
+                fullUpdateString += "," + GameState.Players[i].PlayerID + "," + GameState.Players[i].Points + "," + GameState.Players[i].Shielding;
+            }
+            if (this.TileUpdates.length >= 1) {
+                fullUpdateString += ",c";
+                for (let i = 0; i < this.TileUpdates.length; i++) {
+                    fullUpdateString += "," + this.TileUpdates[i].ColorID + "," + this.TileUpdates[i].X + "," + this.TileUpdates[i].Y;
+                }
+            }
+            if (this.TrapUpdates.length >= 1) {
+                fullUpdateString += ",t";
+                for (let i = 0; i < this.TrapUpdates.length; i++) {
+                    fullUpdateString += "," + (this.TrapUpdates[i].added ? 1 : 0) + "," + this.TrapUpdates[i].X + "," + this.TrapUpdates[i].Y;
+                }
+            }
+            if (this.MoveUpdates != "") {
+                fullUpdateString += ",m" + this.MoveUpdates;
+            }
+            if (this.DiedUpdates != "") {
+                fullUpdateString += ",d" + this.DiedUpdates;
+            }
+
+            GameState.Socket.send("Packet," + fullUpdateString);
+        }
+        this.Reset();
     }
 }
 

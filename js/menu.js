@@ -172,6 +172,7 @@ class MainMenu extends Menu {
         switch (id) {
             case 1:
                 GameState.LoadedMenu = new GameMenu();
+                GameState.LoadedMenu.StartGame();
                 break;
             case 2:
                 GameState.LoadedMenu = new PlayerScreen();
@@ -462,13 +463,13 @@ class GameMenu extends Menu {
     constructor() {
         super();
 
+        this.UpdatesList = new GameUpdates();
         this.Map = null;
         this.Particles = [];
         this.MapOffsetX = 0;
         this.MapOffsetY = 0;
         this.ResetTimer = 0;
         this.Buttons = [new Button(40, 620, 80, 80, "#ff0000", "#ffaaaa", "Menu", 1), new Button(1160, 620, 80, 80, "#ff0000", "#ffaaaa", "Menu", 1)];
-        this.StartGame();
         this.Boxes = [new Box(0, 0, 160, 720, "#dddddd", "Wins", "TopCenter"), new Box(1120, 0, 160, 720, "#dddddd", "Kills", "TopCenter"), null, null, null, null, null, null, null, null, null, null, null, null];
         this.UpdateWinScores();
         this.UpdateKillScores();
@@ -598,6 +599,8 @@ class GameMenu extends Menu {
                 this.ResetTimer = 0;
             }
         }
+
+        this.UpdatesList.SendUpdates();
     }
 
     DrawExtra() {

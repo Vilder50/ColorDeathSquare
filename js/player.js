@@ -163,7 +163,11 @@
 
     Update() {
         //Moving
+        let isMoving = this.Moving();
         this.Move();
+        if (!isMoving && this.Moving()) {
+            GameState.LoadedMenu.UpdatesList.PlayerMoved(this.PlayerID, this.LastDirection, Math.round(this.X / 1000), Math.round(this.Y / 1000));
+        }
         this.Power();
 
         this.UpdateMovement();
@@ -250,7 +254,8 @@
     Trapped(x, y) {
         let tile = GameState.LoadedMenu.Map.Tiles[x][y];
         if (!(tile.From === this.ID) && tile.State == 1) {
-            GameState.LoadedMenu.Map.Tiles[x][y].State = 0;  
+            GameState.LoadedMenu.Map.Tiles[x][y].State = 0;
+            GameState.LoadedMenu.UpdatesList.TrapChangedAt(x, y, false);
             for (let i = 0; i < 20; i++) {
                 let useColor = null;
                 if (i % 2 == 0) {
@@ -264,7 +269,7 @@
             if (this.Shielding == 0) {
                 GameState.Kills[tile.From]++;
                 GameState.LoadedMenu.UpdateKillScores();
-                this.Kill(GameState.CreateColorString(GameState.GetColor(tile.From)));
+                this.Kill(tile.From);
                 return true;
             }
         }
@@ -279,7 +284,13 @@
             locationX = this.PowerX;
             locationY = this.PowerY;
         }
-        GameState.LoadedMenu.Particles.push(new DeathMarker(locationX, locationY, "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")", killer));
+        if (killer == undefined) {
+            GameState.LoadedMenu.Particles.push(new DeathMarker(locationX, locationY, "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")", undefined));
+            GameState.LoadedMenu.UpdatesList.PlayerDied(this.PlayerID, undefined, locationX, locationY);
+        } else {
+            GameState.LoadedMenu.Particles.push(new DeathMarker(locationX, locationY, "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")", GameState.CreateColorString(GameState.GetColor(killer))));
+            GameState.LoadedMenu.UpdatesList.PlayerDied(this.PlayerID, killer, locationX, locationY);
+        }
         for (let i = 0; i < 50; i++) {
             let useColor = null;
             if (i % 2 == 0) {

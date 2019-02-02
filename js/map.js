@@ -185,6 +185,7 @@ class Map {
     }
 
     ColorTile(locationX, locationY, colorID) {
+        GameState.LoadedMenu.UpdatesList.ColoredTile(locationX, locationY, colorID, this.Tiles[locationX][locationY].From);
         this.Tiles[locationX][locationY].From = colorID;
         let data = this.TileImage.data;
         let color = [0, 0, 0];
@@ -208,6 +209,7 @@ class Map {
     }
 
     PlaceTrap(x, y) {
+        GameState.LoadedMenu.UpdatesList.TrapChangedAt(x, y, true);
         this.Tiles[x][y].State = 1;
         GameState.LoadedMenu.Particles.push(new TrapParticle(x, y));
         for (let i = 0; i < GameState.Players.length; i++) {
