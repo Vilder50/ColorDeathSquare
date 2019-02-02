@@ -311,6 +311,8 @@ class ConnectedScreenMenu extends GameMenu {
         this.MapOffsetX = Math.floor((1280 - this.Map.Width * this.Map.TileSize - 4) / 2);
         this.MapOffsetY = Math.floor((720 - this.Map.Height * this.Map.TileSize - 4) / 2);
         GameState.Players = [new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0)];
+        this.Buttons[0].Text = "Exit";
+        this.Buttons[1].Text = "Exit";
 
         GameState.Socket.onmessage = (e) => { this.SocketMessage(e) };
     }
@@ -348,6 +350,19 @@ class ConnectedScreenMenu extends GameMenu {
                 }
             }
             this.StartGame(width, height, walls, playerCoords);
+        } else if (message == "kick") {
+            this.ClickedButton(1);
+        }
+    }
+
+    ClickedButton(id) {
+        switch (id) {
+            case 1:
+                GameState.Socket.close();
+                GameState.Socket = null;
+                GameState.LoadedMenu = new MainMenu();
+                GameState.Players = [new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0)];
+                break;
         }
     }
 
