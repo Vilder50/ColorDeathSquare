@@ -370,13 +370,39 @@ class ConnectedScreenMenu extends GameMenu {
                     }
                     i += 3;
                 } else if (state == "c") {
-
+                    GameState.LoadedMenu.Map.ColorTile(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]), Number(packetsParts[i]));
+                    i += 2;
                 } else if (state == "t") {
-
+                    if (Number(packetsParts[i]) == 1) {
+                        GameState.LoadedMenu.Map.PlaceTrap(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]));
+                    } else {
+                        GameState.LoadedMenu.Map.Tiles[Number(packetsParts[i + 1])][Number(packetsParts[i + 2])].State = 0;
+                    }
+                    i += 2;
                 } else if (state == "m") {
+                    if (Number(packetsParts[i]) == GameState.ConnectionID) {
 
+                    } else {
+                        for (let j = 0; j < GameState.Players.length; j++) {
+                            if (GameState.Players[j].PlayerID == Number(packetsParts[i])) {
+                                GameState.Players[j].X = Number(packetsParts[i + 2]) * 1000;
+                                GameState.Players[j].Y = Number(packetsParts[i + 3]) * 1000;
+                                GameState.Players[j].Move(Number(packetsParts[i + 1]));
+                                break;
+                            }
+                        }
+                    }
+                    i += 3;
                 } else if (state == "d") {
-
+                    for (let j = 0; j < GameState.Players.length; j++) {
+                        if (GameState.Players[j].PlayerID == Number(packetsParts[i])) {
+                            GameState.Players[j].X = Number(packetsParts[i + 2]) * 1000;
+                            GameState.Players[j].Y = Number(packetsParts[i + 3]) * 1000;
+                            GameState.Players[j].Kill(packetsParts[i + 1] == -1 ? undefined : Number(packetsParts[i + 1]));
+                            break;
+                        }
+                    }
+                    i += 3;
                 }
             }
         }
@@ -395,6 +421,7 @@ class ConnectedScreenMenu extends GameMenu {
 
     StartGame(width, height, wallsArray,playerCoords) {
         if (wallsArray != undefined) {
+            this.Particles = [];
             GameState.Canvas.clearRect(0, 0, 1280, 720);
             let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(width, height));
             this.Map = new Map(width, height, tileSize, wallsArray);
@@ -538,6 +565,22 @@ class ThisConnectedPlayer extends Player {
             this.PowerPress = 0;
         }
     }
+
+    Update() {
+        this.Move();
+        this.Power();
+        this.UpdateMovement();
+
+        let locationX = Math.round(this.X / 1000);
+        let locationY = Math.round(this.Y / 1000);
+        if (this.Moving()) {
+            if (!(GameState.LoadedMenu.Map.Tiles[locationX][locationY].From === this.ID)) {
+                GameState.LoadedMenu.Map.ColorTile(locationX, locationY, this.ID)
+                this.AddMoving = 10000
+                this.Points += 1;
+            }
+        }
+    }
 }
 
 class ShellPlayer extends Player {
@@ -596,7 +639,7 @@ class GameUpdates {
             }
         }
 
-        this.TrapUpdates.push([{ X: x, Y: y, Added: added }]);
+        this.TrapUpdates.push({ X: x, Y: y, Added: added });
     }
 
     PlayerMoved(playerID, direction, oldX, oldY) {
@@ -622,7 +665,7 @@ class GameUpdates {
             if (this.TrapUpdates.length >= 1) {
                 fullUpdateString += ",t";
                 for (let i = 0; i < this.TrapUpdates.length; i++) {
-                    fullUpdateString += "," + (this.TrapUpdates[i].added ? 1 : 0) + "," + this.TrapUpdates[i].X + "," + this.TrapUpdates[i].Y;
+                    fullUpdateString += "," + (this.TrapUpdates[i].Added ? 1 : 0) + "," + this.TrapUpdates[i].X + "," + this.TrapUpdates[i].Y;
                 }
             }
             if (this.MoveUpdates != "") {
