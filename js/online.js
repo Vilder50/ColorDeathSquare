@@ -310,7 +310,7 @@ class ConnectedScreenMenu extends GameMenu {
         this.Map = new Map(10, 10, tileSize, walls);
         this.MapOffsetX = Math.floor((1280 - this.Map.Width * this.Map.TileSize - 4) / 2);
         this.MapOffsetY = Math.floor((720 - this.Map.Height * this.Map.TileSize - 4) / 2);
-        GameState.Players = [new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0)];
+        GameState.Players = [new ThisConnectedPlayer(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0)];
         this.Buttons[0].Text = "Exit";
         this.Buttons[1].Text = "Exit";
 
@@ -403,6 +403,7 @@ class ConnectedPlayer extends Player {
         super([], id);
         this.ConnectionID = connectionID;
         this.Dead = true;
+        this.MoveIn = -1;
     }
 
     ExtraReset() {
@@ -429,6 +430,12 @@ class ConnectedPlayer extends Player {
             case "move,shield":
                 this.UseShield();
                 break;
+            case "move,0":
+            case "move,1":
+            case "move,2":
+            case "move,3":
+                this.MoveIn = Number(command.substring(5));
+                break;
         }
     }
 
@@ -441,6 +448,10 @@ class ConnectedPlayer extends Player {
                 }
                 this.MovingIn(i);
             }
+            if (this.MoveIn == i && this.CanMove(i) && !this.Moving()) {
+                this.MovingIn(i);
+                this.MoveIn = -1;
+            }
         }
     }
 
@@ -450,6 +461,53 @@ class ConnectedPlayer extends Player {
 
     ExtraKill() {
         GameState.Socket.send("Player:" + this.ConnectionID + ",dead");
+    }
+}
+
+class ThisConnectedPlayer extends Player {
+    constructor(keys, id) {
+        super(keys, id);
+    }
+
+    Move() {
+        let moved = -1;
+        let overrideAble = false;
+        for (let i = 0; i < 4; i++) {
+            if (GameState.KeyStates[this.Keys[i]] === true && (!this.Moving() || overrideAble) && this.CanMove(i)) {
+                if (this.LastDirection === i) {
+                    overrideAble = true;
+                }
+                this.MovingIn(i);
+                moved = i;
+            }
+        }
+        if (moved != -1) {
+            GameState.Socket.send("Move:" + moved);
+        }
+    }
+
+    Power() {
+        if (GameState.KeyStates[this.Keys[4]] === true) {
+            this.PowerPress += 1;
+        }
+
+        if (GameState.KeyStates[this.Keys[4]] === false && this.PowerPress <= 3 && this.PowerPress >= 1) {
+            GameState.Socket.send("Move:trap");
+        }
+
+        if (this.PowerPress == 4) {
+            GameState.Socket.send("Move:shield");
+        }
+
+        if (this.PowerPress == 4) {
+            if (this.Trapped(this.PowerX, this.PowerY)) {
+                this.PowerPress = 1;
+            }
+        }
+
+        if (GameState.KeyStates[this.Keys[4]] === false) {
+            this.PowerPress = 0;
+        }
     }
 }
 
