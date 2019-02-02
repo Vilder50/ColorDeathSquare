@@ -411,31 +411,33 @@ class ConnectedPlayer extends Player {
     }
 
     DoCommand(command) {
-        switch (command) {
-            case "move,s0":
-            case "move,s1":
-            case "move,s2":
-            case "move,s3":
-                this.Holding[Number(command.substring(6))] = true;
-                break;
-            case "move,e0":
-            case "move,e1":
-            case "move,e2":
-            case "move,e3":
-                this.Holding[Number(command.substring(6))] = false;
-                break;
-            case "move,trap":
-                this.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000), false);
-                break;
-            case "move,shield":
-                this.UseShield();
-                break;
-            case "move,0":
-            case "move,1":
-            case "move,2":
-            case "move,3":
-                this.MoveIn = Number(command.substring(5));
-                break;
+        if (this.Dead) {
+            switch (command) {
+                case "move,s0":
+                case "move,s1":
+                case "move,s2":
+                case "move,s3":
+                    this.Holding[Number(command.substring(6))] = true;
+                    break;
+                case "move,e0":
+                case "move,e1":
+                case "move,e2":
+                case "move,e3":
+                    this.Holding[Number(command.substring(6))] = false;
+                    break;
+                case "move,trap":
+                    this.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000), false);
+                    break;
+                case "move,shield":
+                    this.UseShield();
+                    break;
+                case "move,0":
+                case "move,1":
+                case "move,2":
+                case "move,3":
+                    this.MoveIn = Number(command.substring(5));
+                    break;
+            }
         }
     }
 
