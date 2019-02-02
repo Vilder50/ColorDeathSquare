@@ -102,7 +102,12 @@ class TryConnectMenu extends Menu {
                     GameState.Socket.onmessage = (e) => {
                         let message = e.data;
                         if (message.startsWith("Connected")) {
-                            GameState.LoadedMenu = new Connectedmenu();
+                            GameState.ConnectionID = Number(message.substring(message.indexOf(":") + 1));
+                            if (this.JoinType == "keyboard") {
+                                GameState.LoadedMenu = new ConnectedMenu();
+                            } else {
+                                GameState.LoadedMenu = new ConnectedScreenMenu();
+                            }
                         } else {
                             this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "Failed to join room: " + message, true)];
                             this.Buttons = [new Button(160, 480, 320, 80, "#ff0000", "#ffaaaa", "Back to menu", 1), new Button(800, 480, 320, 80, "#00ff00", "#aaffaa", "Try other code", 2)];
@@ -168,7 +173,7 @@ class TryConnectMenu extends Menu {
     }
 }
 
-class Connectedmenu extends Menu {
+class ConnectedMenu extends Menu {
     constructor() {
         super();
         this.DrawBasicMenuBackground();
@@ -197,7 +202,7 @@ class Connectedmenu extends Menu {
         let buttonColor = GameState.CreateColorString(this.Color);
         let hoverColor = GameState.WhitenColor(this.Color, 0.7);
         let lockedColor = GameState.WhitenColor(this.Color, 0.9);
-        if (message == "alive") {
+        if (message.startsWith("New game")) {
             this.Buttons = [new Button(400, 80, 240, 240, buttonColor, hoverColor, "^", 1),
             new Button(720, 400, 240, 240, buttonColor, hoverColor, ">", 4),
             new Button(80, 400, 240, 240, buttonColor, hoverColor, "<", 2),
@@ -294,8 +299,92 @@ class Connectedmenu extends Menu {
     }
 }
 
+class ConnectedScreenMenu extends GameMenu {
+    constructor() {
+        super();
+        let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(10, 10));
+        let walls = [];
+        for (let i = 0; i < 180; i++) {
+            walls.push(false);
+        }
+        this.Map = new Map(10, 10, tileSize, walls);
+        this.MapOffsetX = Math.floor((1280 - this.Map.Width * this.Map.TileSize - 4) / 2);
+        this.MapOffsetY = Math.floor((720 - this.Map.Height * this.Map.TileSize - 4) / 2);
+        GameState.Players = [new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0)];
+
+        GameState.Socket.onmessage = (e) => { this.SocketMessage(e) };
+    }
+
+    SocketMessage(e) {
+        let message = e.data;
+        if (message.startsWith("New game")) {
+            GameState.Players.splice(1, GameState.Players.length - 1);
+            let gameParts = message.split(",");
+            let state = "w";
+            let width = gameParts[1];
+            let height = gameParts[2];
+            let walls = [];
+            let playerCoords = [{X:0,Y:0}];
+            for (let i = 3; i < gameParts.length; i++) {
+                if (state == "w" && gameParts[i] != "p") {
+                    //wall format:
+                    //iswall,iswall,iswall,iswall...
+                    walls.push(gameParts[i] == "1");
+                } else if (gameParts[i] == "p") {
+                    state = "p";
+
+                } else if (state == "p") {
+                    //player format:
+                    //playerID,spawnX,spawnY,id
+                    if (GameState.ConnectionID != gameParts[i]) {
+                        GameState.Players.push(new ShellPlayer(Number(gameParts[i + 3]), Number(gameParts[i])));
+                        playerCoords.push({ X: Number(gameParts[i + 1]), Y: Number(gameParts[i + 2]) });
+                    } else {
+                        playerCoords[0] = { X: Number(gameParts[i + 1]), Y: Number(gameParts[i + 2]) };
+                        GameState.Players[0].ID = Number(gameParts[i + 3]);
+                        GameState.Players[0].Color = GameState.GetColor(GameState.Players[0].ID);
+                    }
+                    i += 3;
+                }
+            }
+            this.StartGame(width, height, walls, playerCoords);
+        }
+    }
+
+    StartGame(width, height, wallsArray,playerCoords) {
+        if (wallsArray != undefined) {
+            GameState.Canvas.clearRect(0, 0, 1280, 720);
+            let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(width, height));
+            this.Map = new Map(width, height, tileSize, wallsArray);
+            this.MapOffsetX = Math.floor((1280 - this.Map.Width * this.Map.TileSize - 4) / 2);
+            this.MapOffsetY = Math.floor((720 - this.Map.Height * this.Map.TileSize - 4) / 2);
+            for (let i = 0; i < playerCoords.length; i++) {
+                GameState.Players[i].Reset();
+                GameState.Players[i].X = playerCoords[i].X * 1000;
+                GameState.Players[i].Y = playerCoords[i].Y * 1000;
+                this.Map.ColorTile(playerCoords[i].X, playerCoords[i].Y, GameState.Players[i].ID);
+            }
+        }
+    }
+
+    UpdateExtra() {
+        for (let i = 0; i < this.Particles.length; i++) {
+            if (this.Particles[i].Update()) {
+                this.Particles.splice(i, 1);
+                i--;
+            }
+        }
+
+        for (let i = 0; i < GameState.Players.length; i++) {
+            if (!GameState.Players[i].Dead) {
+                GameState.Players[i].Update();
+            }
+        }
+    }
+}
+
 class ConnectedPlayer extends Player {
-    constructor(id,connectionID) {
+    constructor(id, connectionID) {
         super([], id);
         this.ConnectionID = connectionID;
         this.Dead = true;
@@ -348,3 +437,24 @@ class ConnectedPlayer extends Player {
         GameState.Socket.send("Player:" + this.ConnectionID + ",dead");
     }
 }
+
+class ShellPlayer extends Player {
+    constructor(id,playerID) {
+        super([], id);
+        this.ConnectionID = playerID;
+    }
+
+    Move() {
+
+    }
+
+    Power() {
+
+    }
+
+    Update() {
+        this.UpdateMovement();
+    }
+}
+
+

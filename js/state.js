@@ -24,6 +24,7 @@ class State {
         this.Socket = null;
         this.ConnectionCode = null;
         this.ConnectionPingCooldown = 0;
+        this.ConnectionID = -1;
     }
 
     Ready() {

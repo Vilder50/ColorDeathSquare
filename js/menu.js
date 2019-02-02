@@ -516,7 +516,29 @@ class GameMenu extends Menu {
         }
 
         if (GameState.Socket != null) {
-            GameState.Socket.send("New game");
+            let wallString = "";
+            for (let i = 0; i < this.Map.Walls.length; i++) {
+                if (this.Map.Walls[i] === true) {
+                    wallString += "1,";
+                } else {
+                    wallString += "0,";
+                }
+            }
+
+            let playerString = "";
+            for (let i = 0; i < GameState.Players.length; i++) {
+                if (GameState.Players[i] instanceof ConnectedPlayer) {
+                    GameState.Players[i].PlayerID = GameState.Players[i].ConnectionID;
+                } else {
+                    GameState.Players[i].PlayerID = i + 10000;
+                }
+
+                playerString += "," + GameState.Players[i].PlayerID + "," + GameState.Players[i].X / 1000 + "," + GameState.Players[i].Y / 1000 + "," + GameState.Players[i].ID;
+                if (i != GameState.Players.length - 1) {
+                }
+            }
+
+            GameState.Socket.send("New game," + this.Map.Width + "," + this.Map.Height + "," + wallString  + "p" + playerString);
         }
     }
 

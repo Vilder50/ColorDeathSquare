@@ -166,6 +166,44 @@
         this.Move();
         this.Power();
 
+        this.UpdateMovement();
+
+        let locationX = Math.round(this.X / 1000);
+        let locationY = Math.round(this.Y / 1000);
+        if (this.PowerPress >= 1 && this.PowerPress <= 3) {
+            locationX = this.PowerX;
+            locationY = this.PowerY;
+        }
+
+        if (this.Trapped(locationX, locationY)) {
+            return;
+        }
+
+        //Points
+        if (this.Moving()) {
+            if (!(GameState.LoadedMenu.Map.Tiles[locationX][locationY].From === this.ID)) {
+                GameState.LoadedMenu.Map.ColorTile(locationX,locationY,this.ID)
+                this.AddMoving = 10000
+                this.Points += 1;
+            }
+        }
+
+        this.Shielding = Math.max(0, this.Shielding - 40);
+
+        //Color fading
+        if (this.AddMoving <= 0) {
+            this.NotMoving -= 40;
+            if (this.NotMoving <= 0) {
+                this.Kill();
+            }
+        } else {
+            this.NotMoving = Math.min(160 + this.NotMoving, 10000);
+            this.AddMoving -= 320;
+        }
+
+    }
+
+    UpdateMovement() {
         if (this.MotionX > 0) {
             this.MotionX -= 200;
             this.X -= 200;
@@ -191,26 +229,6 @@
             this.Rotation += 60000;
         }
 
-        let locationX = Math.round(this.X / 1000);
-        let locationY = Math.round(this.Y / 1000);
-        if (this.PowerPress >= 1 && this.PowerPress <= 3) {
-            locationX = this.PowerX;
-            locationY = this.PowerY;
-        }
-
-        if (this.Trapped(locationX, locationY)) {
-            return;
-        }
-
-        //Points
-        if (this.Moving()) {
-            if (!(GameState.LoadedMenu.Map.Tiles[locationX][locationY].From === this.ID)) {
-                GameState.LoadedMenu.Map.ColorTile(locationX,locationY,this.ID)
-                this.AddMoving = 10000
-                this.Points += 1;
-            }
-        }
-
         if (Math.floor(this.Points / 20) > this.Layers) {
             this.Layers = Math.floor(this.Points / 20);
             this.LayerAddAnimation = 500;
@@ -227,20 +245,6 @@
         } else {
             this.ShieldAnimation = Math.min(this.ShieldAnimation + 40, 500);
         }
-
-        this.Shielding = Math.max(0, this.Shielding - 40);
-
-        //Color fading
-        if (this.AddMoving <= 0) {
-            this.NotMoving -= 40;
-            if (this.NotMoving <= 0) {
-                this.Kill();
-            }
-        } else {
-            this.NotMoving = Math.min(160 + this.NotMoving, 10000);
-            this.AddMoving -= 320;
-        }
-
     }
 
     Trapped(x, y) {
