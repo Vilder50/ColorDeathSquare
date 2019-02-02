@@ -345,6 +345,7 @@ class ConnectedScreenMenu extends GameMenu {
                         playerCoords[0] = { X: Number(gameParts[i + 1]), Y: Number(gameParts[i + 2]) };
                         GameState.Players[0].ID = Number(gameParts[i + 3]);
                         GameState.Players[0].Color = GameState.GetColor(GameState.Players[0].ID);
+                        GameState.Players[0].PlayerID = gameParts[i];
                     }
                     i += 3;
                 }
@@ -352,6 +353,32 @@ class ConnectedScreenMenu extends GameMenu {
             this.StartGame(width, height, walls, playerCoords);
         } else if (message == "kick") {
             this.ClickedButton(1);
+        } else if (message.startsWith("Packet")) {
+            let packetsParts = message.split(",");
+            let state = "p"
+            for (let i = 2; i < packetsParts.length; i++) {
+                if (isNaN(Number(packetsParts[i]))) {
+                    state = packetsParts[i];
+                } else if (state == "p") {
+                    for (let j = 0; j < GameState.Players.length; j++) {
+                        if (GameState.Players[j].PlayerID == Number(packetsParts[i])) {
+                            GameState.Players[j].Points = Number(packetsParts[i + 1]);
+                            GameState.Players[j].Shielding = Number(packetsParts[i + 2]);
+                            GameState.Players[j].NotMoving = Number(packetsParts[i + 3])
+                            break;
+                        }
+                    }
+                    i += 3;
+                } else if (state == "c") {
+
+                } else if (state == "t") {
+
+                } else if (state == "m") {
+
+                } else if (state == "d") {
+
+                }
+            }
         }
     }
 
@@ -411,7 +438,7 @@ class ConnectedPlayer extends Player {
     }
 
     DoCommand(command) {
-        if (this.Dead) {
+        if (!this.Dead) {
             switch (command) {
                 case "move,s0":
                 case "move,s1":
@@ -516,11 +543,13 @@ class ThisConnectedPlayer extends Player {
 class ShellPlayer extends Player {
     constructor(id,playerID) {
         super([], id);
-        this.ConnectionID = playerID;
+        this.PlayerID = playerID;
     }
 
-    Move() {
-
+    Move(direction) {
+        if (this.CanMove(direction)) {
+            this.MovingIn(direction);
+        }
     }
 
     Power() {
@@ -536,7 +565,7 @@ class GameUpdates {
     constructor() {
         this.Reset();
     }
-
+    
     Reset() {
         this.TileUpdates = [];
         this.TrapUpdates = [];
@@ -582,7 +611,7 @@ class GameUpdates {
         if (GameState.Socket != null && GameState.ConnectionCode != null) {
             let fullUpdateString = "p";
             for (let i = 0; i < GameState.Players.length; i++) {
-                fullUpdateString += "," + GameState.Players[i].PlayerID + "," + GameState.Players[i].Points + "," + GameState.Players[i].Shielding;
+                fullUpdateString += "," + GameState.Players[i].PlayerID + "," + GameState.Players[i].Points + "," + GameState.Players[i].Shielding + "," + GameState.Players[i].NotMoving;
             }
             if (this.TileUpdates.length >= 1) {
                 fullUpdateString += ",c";
