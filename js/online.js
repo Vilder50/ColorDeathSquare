@@ -439,7 +439,7 @@ class ConnectedScreenMenu extends GameMenu {
         if (wallsArray != undefined) {
             this.Particles = [];
             GameState.Canvas.clearRect(0, 0, 1280, 720);
-            let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(width, height));
+            let tileSize = Math.floor(Math.min((900 - GameState.WallSizeOption * 3) / width, (720 - GameState.WallSizeOption * 3) / height));
             this.Map = new Map(width, height, tileSize, wallsArray);
             this.MapOffsetX = Math.floor((1280 - this.Map.Width * this.Map.TileSize - 4) / 2);
             this.MapOffsetY = Math.floor((720 - this.Map.Height * this.Map.TileSize - 4) / 2);
