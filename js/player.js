@@ -15,33 +15,21 @@
 
     Power() {
         if (GameState.KeyStates[this.Keys[4]] === true) {
-            if (this.PowerPress == 0) {
-                this.PowerX = Math.round(this.X / 1000);
-                this.PowerY = Math.round(this.Y / 1000);
-            }
             this.PowerPress += 1;
         }
 
         if (GameState.KeyStates[this.Keys[4]] === false && this.PowerPress <= 3 && this.PowerPress >= 1) {
-            if (this.Trapped(this.PowerX, this.PowerY)) {
+            if (this.Trapped(Math.round(this.X / 1000), Math.round(this.Y / 1000))) {
                 return;
             }
         }
 
         if (GameState.KeyStates[this.Keys[4]] === false && this.PowerPress <= 3 && this.PowerPress >= 1) {
-            if (!this.PlaceTrap(this.PowerX, this.PowerY, true)) {
-                this.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000), false);
-            }
+            this.PlaceTrap(Math.round(this.X / 1000), Math.round(this.Y / 1000), false);
         }
 
         if (this.PowerPress == 4) {
             this.UseShield();
-        }
-
-        if (this.PowerPress == 4) {
-            if (this.Trapped(this.PowerX, this.PowerY)) {
-                this.PowerPress = 1;
-            }
         }
 
         if (GameState.KeyStates[this.Keys[4]] === false) {
@@ -174,10 +162,6 @@
 
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
-        if (this.PowerPress >= 1 && this.PowerPress <= 3) {
-            locationX = this.PowerX;
-            locationY = this.PowerY;
-        }
 
         if (this.Trapped(locationX, locationY)) {
             return;
@@ -280,10 +264,6 @@
         this.Dead = true;
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
-        if (this.PowerPress >= 1 && this.PowerPress <= 3) {
-            locationX = this.PowerX;
-            locationY = this.PowerY;
-        }
         if (killer == undefined) {
             GameState.LoadedMenu.Particles.push(new DeathMarker(locationX, locationY, "rgb(" + this.Color[0] + "," + this.Color[1] + "," + this.Color[2] + ")", undefined));
             GameState.LoadedMenu.UpdatesList.PlayerDied(this.PlayerID, undefined, locationX, locationY);
@@ -324,8 +304,6 @@
         this.Layers = 0;
         this.PowerPress = 0;
         this.Shielding = 300;
-        this.PowerX = 0;
-        this.PowerY = 0;
 
         this.ExtraReset();
     }

@@ -700,12 +700,6 @@ class ThisConnectedPlayer extends Player {
             GameState.Socket.send("Move:shield");
         }
 
-        if (this.PowerPress == 4) {
-            if (this.Trapped(this.PowerX, this.PowerY)) {
-                this.PowerPress = 1;
-            }
-        }
-
         if (GameState.KeyStates[this.Keys[4]] === false) {
             this.PowerPress = 0;
         }
