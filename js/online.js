@@ -304,6 +304,15 @@ class ConnectedMenu extends Menu {
 class ConnectedScreenMenu extends GameMenu {
     constructor() {
         super();
+
+        this.Buttons[0].Text = "Exit";
+        this.Buttons[1].Text = "Exit";
+        this.ShowWaitingScreen();
+        GameState.Players = [new ThisConnectedPlayer(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0)];
+        GameState.Socket.onmessage = (e) => { this.SocketMessage(e) };
+    }
+
+    ShowWaitingScreen() {
         let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(12, 4));
         let walls = [];
         for (let i = 0; i < 220; i++) {
@@ -341,10 +350,10 @@ class ConnectedScreenMenu extends GameMenu {
         this.MapOffsetX = Math.floor((1280 - this.Map.Width * this.Map.TileSize - 4) / 2);
         this.MapOffsetY = Math.floor((720 - this.Map.Height * this.Map.TileSize - 4) / 2);
         GameState.Players = [new ThisConnectedPlayer(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0)];
-        this.Buttons[0].Text = "Exit";
-        this.Buttons[1].Text = "Exit";
-
-        GameState.Socket.onmessage = (e) => { this.SocketMessage(e) };
+        this.Wins = [];
+        this.Kills = [];
+        this.UpdateWinScores();
+        this.UpdateKillScores();
     }
 
     SocketMessage(e) {
@@ -389,6 +398,11 @@ class ConnectedScreenMenu extends GameMenu {
             for (let i = 2; i < packetsParts.length; i++) {
                 if (isNaN(Number(packetsParts[i]))) {
                     state = packetsParts[i];
+                    if (state == "sk") {
+                        this.Kills = [];
+                    } else if (state == "sw") {
+                        this.Wins = [];
+                    }
                 } else if (state == "p") {
                     for (let j = 0; j < GameState.Players.length; j++) {
                         if (GameState.Players[j].PlayerID == Number(packetsParts[i])) {
@@ -400,13 +414,13 @@ class ConnectedScreenMenu extends GameMenu {
                     }
                     i += 3;
                 } else if (state == "c") {
-                    GameState.LoadedMenu.Map.ColorTile(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]), Number(packetsParts[i]));
+                    this.Map.ColorTile(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]), Number(packetsParts[i]));
                     i += 2;
                 } else if (state == "t") {
                     if (Number(packetsParts[i]) == 1) {
-                        GameState.LoadedMenu.Map.PlaceTrap(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]));
+                        this.Map.PlaceTrap(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]));
                     } else {
-                        GameState.LoadedMenu.Map.Tiles[Number(packetsParts[i + 1])][Number(packetsParts[i + 2])].State = 0;
+                        this.Map.Tiles[Number(packetsParts[i + 1])][Number(packetsParts[i + 2])].State = 0;
                         for (let j = 0; j < 20; j++) {
                             let useColor = null;
                             if (j % 2 == 0) {
@@ -415,7 +429,7 @@ class ConnectedScreenMenu extends GameMenu {
                                 useColor = "#505050";
                             }
                             let direction = Math.random() * Math.PI * 2;
-                            GameState.LoadedMenu.Particles.push(new ColorParticle(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]), Math.cos(direction) * (Math.random() * 1.5), Math.sin(direction) * (Math.random() * 1.5), 1 + Math.random() * 0.4, useColor, GameState.LoadedMenu.Map.TileSize / 4 + Math.random() * 2));
+                            this.Particles.push(new ColorParticle(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]), Math.cos(direction) * (Math.random() * 1.5), Math.sin(direction) * (Math.random() * 1.5), 1 + Math.random() * 0.4, useColor, GameState.LoadedMenu.Map.TileSize / 4 + Math.random() * 2));
                         }
                     }
                     i += 2;
@@ -447,6 +461,14 @@ class ConnectedScreenMenu extends GameMenu {
                         }
                     }
                     i += 3;
+                } else if (state == "sk") {
+                    this.Kills.push({ ID: Number(packetsParts[i]), Amount: Number(packetsParts[i + 1]) });
+                    this.UpdateKillScores();
+                    i += 1;
+                } else if (state == "sw") {
+                    this.Wins.push({ ID: Number(packetsParts[i]), Amount: Number(packetsParts[i + 1]) });
+                    this.UpdateWinScores();
+                    i += 1;
                 }
             }
         }
@@ -495,6 +517,30 @@ class ConnectedScreenMenu extends GameMenu {
         for (let i = 0; i < GameState.Players.length; i++) {
             if (!GameState.Players[i].Dead) {
                 GameState.Players[i].Update();
+            }
+        }
+    }
+
+    UpdateWinScores() {
+        if (this.Wins != undefined) {
+            for (let i = 0; i < 6; i++) {
+                if (i < this.Wins.length) {
+                    this.Boxes[i + 2] = new Box(40, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(Number(this.Wins[i].ID))), this.Wins[i].Amount, true);
+                } else {
+                    this.Boxes[i + 2] = null;
+                }
+            }
+        }
+    }
+
+    UpdateKillScores() {
+        if (this.Kills != undefined) {
+            for (let i = 0; i < 6; i++) {
+                if (i < this.Kills.length) {
+                    this.Boxes[i + 8] = new Box(1160, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(Number(this.Kills[i].ID))), this.Kills[i].Amount, true);
+                } else {
+                    this.Boxes[i + 8] = null;
+                }
             }
         }
     }
@@ -674,6 +720,8 @@ class GameUpdates {
         this.TrapUpdates = [];
         this.MoveUpdates = "";
         this.DiedUpdates = "";
+        this.KillScoresUpdate = "";
+        this.WinScoresUpdate = "";
     }
 
     ColoredTile(x, y, colorID, colorIDBefore) {
@@ -733,6 +781,12 @@ class GameUpdates {
             }
             if (this.DiedUpdates != "") {
                 fullUpdateString += ",d" + this.DiedUpdates;
+            }
+            if (this.KillScoresUpdate != "") {
+                fullUpdateString += ",sk" + this.KillScoresUpdate;
+            }
+            if (this.WinScoresUpdate != "") {
+                fullUpdateString += ",sw" + this.WinScoresUpdate;
             }
 
             GameState.Socket.send("Packet," + fullUpdateString);

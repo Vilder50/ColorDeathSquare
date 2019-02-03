@@ -524,6 +524,8 @@ class GameMenu extends Menu {
 
             GameState.Socket.send("New game," + this.Map.Width + "," + this.Map.Height + "," + wallString  + "p" + playerString);
         }
+        this.UpdateWinScores();
+        this.UpdateKillScores();
     }
 
     UpdateExtra() {
@@ -621,9 +623,16 @@ class GameMenu extends Menu {
                 sortedWins.push({ ID: index, Amount: value });
             }
         }
-        for (let i = 0; i < Math.min(sortedWins.length, 6); i++) {
-            this.Boxes[i + 2] = new Box(40, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(Number(sortedWins[i].ID))), sortedWins[i].Amount, true);
+        let updateString = "";
+        for (let i = 0; i < 6; i++) {
+            if (i < sortedWins.length) {
+                this.Boxes[i + 2] = new Box(40, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(Number(sortedWins[i].ID))), sortedWins[i].Amount, true);
+                updateString += "," + sortedWins[i].ID + "," + sortedWins[i].Amount;
+            } else {
+                this.Boxes[i + 2] = null;
+            }
         }
+        this.UpdatesList.WinScoresUpdate = updateString;
     }
 
     UpdateKillScores() {
@@ -649,9 +658,16 @@ class GameMenu extends Menu {
                 sortedKills.push({ ID: index, Amount: value });
             }
         }
-        for (let i = 0; i < Math.min(sortedKills.length, 6); i++) {
-            this.Boxes[i + 8] = new Box(1160, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(Number(sortedKills[i].ID))), sortedKills[i].Amount, true);
+        let updateString = "";
+        for (let i = 0; i < 6; i++) {
+            if (i < sortedKills.length) {
+                this.Boxes[i + 8] = new Box(1160, 40 + i * 90, 80, 80, GameState.CreateColorString(GameState.GetColor(Number(sortedKills[i].ID))), sortedKills[i].Amount, true);
+                updateString += "," + sortedKills[i].ID + "," + sortedKills[i].Amount;
+            } else {
+                this.Boxes[i + 8] = null;
+            }
         }
+        this.UpdatesList.KillScoresUpdate = updateString;
     }
 
     ColorIsIngame(id) {
