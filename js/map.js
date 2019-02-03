@@ -218,6 +218,18 @@ class Map {
             }
         }
     }
+
+    DisplayAllTraps() {
+        if (!GameState.TrapOption) {
+            for (let x = 0; x < this.Width; x++) {
+                for (let y = 0; y < this.Height; y++) {
+                    if (this.Tiles[x][y].State == 1) {
+                        GameState.LoadedMenu.Particles.push(new TrapParticle(x, y, true));
+                    }
+                }
+            }
+        }
+    }
 }
 
 class Tile {

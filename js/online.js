@@ -489,6 +489,7 @@ class ConnectedScreenMenu extends GameMenu {
                 } else if (state == "w") {
                     this.Boxes[0].Color = GameState.CreateColorString(GameState.GetColor(Number(packetsParts[i])));
                     this.Boxes[1].Color = this.Boxes[0].Color;
+                    this.Map.DisplayAllTraps();
                 }
             }
         } else if (message == "end") {

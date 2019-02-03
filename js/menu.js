@@ -563,15 +563,7 @@ class GameMenu extends Menu {
 
         if (teamsAlive <= 1 || (realPlayers == 0 && GameState.RobotOption)) {
             if (this.ResetTimer == 0) {
-                if (!GameState.TrapOption) {
-                    for (let x = 0; x < this.Map.Width; x++) {
-                        for (let y = 0; y < this.Map.Height; y++) {
-                            if (this.Map.Tiles[x][y].State == 1) {
-                                this.Particles.push(new TrapParticle(x, y, true));
-                            }
-                        }
-                    }
-                }
+                this.Map.DisplayAllTraps();
 
                 if (teams.length >= 1) {
                     let winner = teams[Math.floor(Math.random() * teams.length)];
