@@ -1,17 +1,24 @@
 class TryConnectMenu extends Menu {
-    constructor() {
+    constructor(roomCode) {
         super();
 
         this.DrawBasicMenuBackground();
         this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "Connecting...", true)];
         this.Buttons = [new Button(480, 480, 320, 80, "#ff0000", "#ffaaaa", "Cancel", 1)];
-        this.WrittenCode = [];
         GameState.Socket = new WebSocket("wss://color-death-square.herokuapp.com/");
+
+
+        this.WrittenCode = roomCode != undefined ? roomCode : [];
+        this.ForceJoin = roomCode != undefined;
         this.JoinType = "keyboard";
 
         GameState.Socket.onopen = () => {
             this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "", true)];
-            this.Buttons = [new Button(500, 160, 280, 240, "#ffff00", "#ffffaa", "Join with keyboard only", 2), new Button(160, 160, 280, 240, "#00ffff", "#aaffff", "Join", 7), new Button(840, 160, 280, 240, "#00ff00", "#aaffaa", "Host", 3), new Button(480, 480, 320, 80, "#ff0000", "#ffaaaa", "Back to menu", 1)];
+            if (roomCode == undefined) {
+                this.Buttons = [new Button(500, 160, 280, 240, "#ffff00", "#ffffaa", "Join with keyboard only", 2), new Button(160, 160, 280, 240, "#00ffff", "#aaffff", "Join", 7), new Button(840, 160, 280, 240, "#00ff00", "#aaffaa", "Host", 3), new Button(480, 480, 320, 80, "#ff0000", "#ffaaaa", "Back to menu", 1)];
+            } else {
+                this.Buttons = [new Button(720, 160, 400, 240, "#ffff00", "#ffffaa", "Join with keyboard only", 2), new Button(160, 160, 400, 240, "#00ffff", "#aaffff", "Join", 7), new Button(480, 480, 320, 80, "#ff0000", "#ffaaaa", "Back to menu", 1)];
+            }
         }
 
         GameState.Socket.onerror = (error) => {
@@ -25,17 +32,23 @@ class TryConnectMenu extends Menu {
                 GameState.LoadedMenu = new MainMenu();
                 break;
             case 2:
-                this.WrittenCode = [];
-                this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "Enter room code", "TopCenter"), new Box(160, 120, 940, 80, "#ffffff", "", false)];
-                this.Buttons = [new Button(160, 480, 180, 80, "#ff0000", "#ffaaaa", "Cancel", 1),
+                if (this.ForceJoin) {
+                    this.ForceJoin = false;
+                    this.ClickedButton(5);
+                } else {
+                    this.WrittenCode = [];
+
+                    this.Boxes = [new Box(80, 80, 1120, 560, "#ff00ff", "Enter room code", "TopCenter"), new Box(160, 120, 940, 80, "#ffffff", "", false)];
+                    this.Buttons = [new Button(160, 480, 180, 80, "#ff0000", "#ffaaaa", "Cancel", 1),
                     new Button(420, 480, 180, 80, "#ff8000", GameState.WhitenColor(GameState.GetColor(3), 0.7), "Reset", 4),
                     new Button(940, 480, 180, 80, "#70d070", "#70d070", "Join", 5),
                     new Button(680, 480, 180, 80, "#E0BB00", "#E0BB00", "Delete", 6)];
-                for (let i = 0; i < 10; i++) {
-                    this.Boxes.push(new Box(250 + i * 80, 130, 60, 60, "#ffffff", "", true));
-                }
-                for (let i = 0; i < 6; i++) {
-                    this.Buttons.push(new Button(160 + i * 160 + Math.floor(i / 3) * 80, 320, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.WhitenColor(GameState.GetColor(i), 0.7), (i + 1), 100 + i));
+                    for (let i = 0; i < 10; i++) {
+                        this.Boxes.push(new Box(250 + i * 80, 130, 60, 60, "#ffffff", "", true));
+                    }
+                    for (let i = 0; i < 6; i++) {
+                        this.Buttons.push(new Button(160 + i * 160 + Math.floor(i / 3) * 80, 320, 80, 80, GameState.CreateColorString(GameState.GetColor(i)), GameState.WhitenColor(GameState.GetColor(i), 0.7), (i + 1), 100 + i));
+                    }
                 }
                 break;
             case 3:
@@ -305,6 +318,7 @@ class ConnectedScreenMenu extends GameMenu {
     constructor() {
         super();
 
+        this.InGame = false;
         this.Buttons[0].Text = "Exit";
         this.Buttons[1].Text = "Exit";
         this.ShowWaitingScreen();
@@ -313,6 +327,7 @@ class ConnectedScreenMenu extends GameMenu {
     }
 
     ShowWaitingScreen() {
+        this.InGame = false;
         this.Particles = [];
         GameState.Canvas.clearRect(0, 0, 1280, 720);
         let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(12, 4));
@@ -394,7 +409,7 @@ class ConnectedScreenMenu extends GameMenu {
             this.StartGame(width, height, walls, playerCoords);
         } else if (message == "kick") {
             this.ClickedButton(1);
-        } else if (message.startsWith("Packet")) {
+        } else if (message.startsWith("Packet") && this.InGame) {
             let packetsParts = message.split(",");
             let state = "p"
             for (let i = 2; i < packetsParts.length; i++) {
@@ -494,6 +509,7 @@ class ConnectedScreenMenu extends GameMenu {
 
     StartGame(width, height, wallsArray,playerCoords) {
         if (wallsArray != undefined) {
+            this.InGame = true;
             this.Particles = [];
             GameState.Canvas.clearRect(0, 0, 1280, 720);
             let tileSize = Math.floor(Math.min((900 - GameState.WallSizeOption * 3) / width, (720 - GameState.WallSizeOption * 3) / height));

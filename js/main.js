@@ -7,7 +7,18 @@ var GameState;
     GameState.RawCanvas = document.getElementById("ColorDeathSquare");
     GameState.Canvas = GameState.RawCanvas.getContext("2d");
     GameState.ExtraRawCanvas = document.getElementById("ColorDeathSquareExtra");
-    GameState.Ready();
+    if (window.location.search.startsWith("?key=")) {
+        let roomKey = window.location.search.substring(5, 15);
+        let roomKeyArray = [];
+        for (let i = 0; i < 10; i++) {
+            roomKeyArray.push(Number(roomKey.substring(i, i + 1)));
+        }
+        this.Players = [new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0), new Robot(1), new Robot(2)];
+        GameState.LoadedMenu = new TryConnectMenu(roomKeyArray);
+    } else {
+        GameState.Ready();
+    }
+
     GameState.Update();
     GameState.Draw();
 })();

@@ -162,6 +162,7 @@ class MainMenu extends Menu {
                 this.Boxes.push(new Box(250 + i * 80, 90, 60, 60, GameState.CreateColorString(GameState.GetColor(GameState.ConnectionCode[i])), (GameState.ConnectionCode[i] + 1), true));
             }
             this.Buttons.push(new Button(80, 560, 160, 80, "#ff00ff", "#ffaaff", "End Room", 6));
+            this.Buttons.push(new Button(1130, 90, 60, 60, "#dddddd", "#ffffff", "Copy", 7));
         } else {
             this.Buttons.push(new Button(80, 560, 160, 80, "#ff00ff", "#ffaaff", "Online", 5));
         }
@@ -198,6 +199,14 @@ class MainMenu extends Menu {
                     }
                 }
                 GameState.LoadedMenu = new MainMenu();
+                break;
+            case 7:
+                let linkHolder = document.createElement("textarea");
+                linkHolder.value = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname + "?key=" + GameState.ConnectionCode.toString().replace(/[,]*/g,"");
+                document.body.appendChild(linkHolder);
+                linkHolder.select();
+                document.execCommand("copy");
+                document.body.removeChild(linkHolder);
                 break;
         }
     }

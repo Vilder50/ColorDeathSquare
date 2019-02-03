@@ -6,7 +6,6 @@ class State {
         this.RawCanvas = null;
         this.ExtraRawCanvas = null;
 
-        this.Players = [];
         this.KeyStates = [];
         this.MouseX = 0;
         this.MouseY = 0;
