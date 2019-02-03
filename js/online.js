@@ -379,6 +379,16 @@ class ConnectedScreenMenu extends GameMenu {
                         GameState.LoadedMenu.Map.PlaceTrap(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]));
                     } else {
                         GameState.LoadedMenu.Map.Tiles[Number(packetsParts[i + 1])][Number(packetsParts[i + 2])].State = 0;
+                        for (let j = 0; j < 20; j++) {
+                            let useColor = null;
+                            if (j % 2 == 0) {
+                                useColor = "#000000";
+                            } else {
+                                useColor = "#505050";
+                            }
+                            let direction = Math.random() * Math.PI * 2;
+                            GameState.LoadedMenu.Particles.push(new ColorParticle(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]), Math.cos(direction) * (Math.random() * 1.5), Math.sin(direction) * (Math.random() * 1.5), 1 + Math.random() * 0.4, useColor, GameState.LoadedMenu.Map.TileSize / 4 + Math.random() * 2));
+                        }
                     }
                     i += 2;
                 } else if (state == "m") {

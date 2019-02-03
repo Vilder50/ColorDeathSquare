@@ -685,7 +685,7 @@ class OptionMenu extends Menu {
         this.Buttons.push(new Button(1050, 410, 140, 60, !GameState.RobotOption ?  "#ff0000" : "#909090", !GameState.RobotOption ? "#ffaaaa" : "#dddddd", "OFF", 14));
         this.Buttons.push(new Button(810, 570, 140, 60, GameState.TrapOption ? "#00ff00" : "#909090", GameState.TrapOption ? "#aaffaa" : "#dddddd", "ON", 15));
         this.Buttons.push(new Button(1050, 570, 140, 60, !GameState.TrapOption ? "#ff0000" : "#909090", !GameState.TrapOption ? "#ffaaaa" : "#dddddd", "OFF", 16));
-        this.Buttons.push(new Button(80, 80, 240, 80, !GameState.TrapOption ? "#ff0000" : "#909090", !GameState.TrapOption ? "#ffaaaa" : "#dddddd", "Fullscreen", 17));
+        this.Buttons.push(new Button(80, 80, 240, 80, "#ff0000", "#ffaaaa", "Fullscreen", 17));
     }
 
     ClickedButton(id) {
