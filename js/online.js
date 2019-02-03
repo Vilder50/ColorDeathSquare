@@ -304,12 +304,40 @@ class ConnectedMenu extends Menu {
 class ConnectedScreenMenu extends GameMenu {
     constructor() {
         super();
-        let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(10, 10));
+        let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(12, 4));
         let walls = [];
-        for (let i = 0; i < 180; i++) {
+        for (let i = 0; i < 220; i++) {
             walls.push(false);
         }
-        this.Map = new Map(10, 10, tileSize, walls);
+        //w
+        walls[25] = true;//2+1
+        walls[26] = true;//2+2
+        walls[27] = true;//2+3
+        walls[49] = true;//4+1
+        walls[50] = true;//4+2
+        walls[51] = true;//4+3
+        walls[61] = true;//5+2
+        walls[62] = true;//5+3
+        //a
+        walls[16] = true;//1+4
+        walls[28] = true;//2+4
+        walls[29] = true;//2+5
+        walls[40] = true;//3+4
+        walls[52] = true;//4+4
+        walls[53] = true;//4+5
+        //i
+        walls[18] = true;//1+6
+        walls[19] = true;//1+7
+        walls[31] = true;//2+7
+        walls[55] = true;//4+7
+        walls[66] = true;//5+6
+        walls[67] = true;//5+7
+        //t
+        walls[21] = true;//1+9
+        walls[22] = true;//1+10
+        walls[34] = true;//2+10
+        walls[58] = true;//4+10
+        this.Map = new Map(12, 4, tileSize, walls);
         this.MapOffsetX = Math.floor((1280 - this.Map.Width * this.Map.TileSize - 4) / 2);
         this.MapOffsetY = Math.floor((720 - this.Map.Height * this.Map.TileSize - 4) / 2);
         GameState.Players = [new ThisConnectedPlayer(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0)];
