@@ -531,7 +531,7 @@ class GameMenu extends Menu {
                 }
             }
 
-            GameState.Socket.send("New game," + this.Map.Width + "," + this.Map.Height + "," + wallString  + "p" + playerString);
+            GameState.Socket.send("New game," + this.Map.Width + "," + this.Map.Height + "," + (GameState.TrapOption ? "1" : "0") + "," + wallString + "p" + playerString);
         }
         this.UpdateWinScores();
         this.UpdateKillScores();

@@ -382,8 +382,9 @@ class ConnectedScreenMenu extends GameMenu {
             let width = gameParts[1];
             let height = gameParts[2];
             let walls = [];
+            GameState.TrapOption = gameParts[3] == "1" ? true : false;
             let playerCoords = [{ X: 0, Y: 0 }];
-            for (let i = 3; i < gameParts.length; i++) {
+            for (let i = 4; i < gameParts.length; i++) {
                 if (state == "w" && gameParts[i] != "p") {
                     //wall format:
                     //iswall,iswall,iswall,iswall...
