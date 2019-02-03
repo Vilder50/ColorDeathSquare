@@ -324,6 +324,7 @@ class ConnectedScreenMenu extends GameMenu {
         this.ShowWaitingScreen();
         GameState.Players = [new ThisConnectedPlayer(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], 0)];
         GameState.Socket.onmessage = (e) => { this.SocketMessage(e) };
+        this.ColoredTiles = [];
     }
 
     ShowWaitingScreen() {
@@ -433,6 +434,11 @@ class ConnectedScreenMenu extends GameMenu {
                     i += 3;
                 } else if (state == "c") {
                     this.Map.ColorTile(Number(packetsParts[i + 1]), Number(packetsParts[i + 2]), Number(packetsParts[i]));
+                    for (let j = 0; j < this.ColoredTiles.length; j++) {
+                        if (this.ColoredTiles[j].X == Number(packetsParts[i + 1]) && this.ColoredTiles[j].Y == Number(packetsParts[i + 2])) {
+                            this.ColoredTiles.splice(j, 1);
+                        }
+                    }
                     i += 2;
                 } else if (state == "t") {
                     if (Number(packetsParts[i]) == 1) {
@@ -491,6 +497,14 @@ class ConnectedScreenMenu extends GameMenu {
                     this.Boxes[0].Color = GameState.CreateColorString(GameState.GetColor(Number(packetsParts[i])));
                     this.Boxes[1].Color = this.Boxes[0].Color;
                     this.Map.DisplayAllTraps();
+                }
+            }
+            for (let i = 0; i < this.ColoredTiles.length; i++) {
+                if (this.ColoredTiles[i].Chances == 0) {
+                    this.Map.ColorTile(this.ColoredTiles[i].X, this.ColoredTiles[i].Y, this.ColoredTiles[i].Before);
+                    this.ColoredTiles.splice(i, 1);
+                } else {
+                    this.ColoredTiles[i].Chances--;
                 }
             }
         } else if (message == "end") {
@@ -706,8 +720,9 @@ class ThisConnectedPlayer extends Player {
         let locationY = Math.round(this.Y / 1000);
         if (this.Moving()) {
             if (!(GameState.LoadedMenu.Map.Tiles[locationX][locationY].From === this.ID)) {
-                GameState.LoadedMenu.Map.ColorTile(locationX, locationY, this.ID)
-                this.AddMoving = 10000
+                GameState.LoadedMenu.ColoredTiles.push({ X: locationX, Y: locationY, Before: GameState.LoadedMenu.Map.Tiles[locationX][locationY].From, Chances: 10 });
+                GameState.LoadedMenu.Map.ColorTile(locationX, locationY, this.ID);
+                    this.AddMoving = 10000;
                 this.Points += 1;
             }
         }

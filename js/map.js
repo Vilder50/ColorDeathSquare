@@ -189,7 +189,12 @@ class Map {
         this.Tiles[locationX][locationY].From = colorID;
         let data = this.TileImage.data;
         let color = [0, 0, 0];
-        let toColor = GameState.GetColor(colorID)
+        let toColor = [];
+        if (colorID == null) {
+            toColor = [255,255,255];
+        } else {
+            toColor = GameState.GetColor(colorID);
+        }
         if ((locationX + locationY) % 2 == 1) {
             for (let i = 0; i < 3; i++) {
                 color[i] = toColor[i] + (255 - toColor[i]) * 0.3;
