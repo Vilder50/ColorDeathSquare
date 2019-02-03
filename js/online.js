@@ -213,7 +213,7 @@ class ConnectedMenu extends Menu {
             new Button(1040, 400, 160, 240, buttonColor, hoverColor, "Shield", 6),
             new Button(80, 80, 160, 160, "#ff0000", "#ffaaaa", "Exit", 7)];
             this.Alive = true;
-        } else if (message == "dead") {
+        } else if (message == "dead" || message == "end") {
             this.Buttons = [new Button(400, 80, 240, 240, lockedColor, lockedColor, "^", 1),
             new Button(720, 400, 240, 240, lockedColor, lockedColor, ">", 4),
             new Button(80, 400, 240, 240, lockedColor, lockedColor, "<", 2),
@@ -313,6 +313,8 @@ class ConnectedScreenMenu extends GameMenu {
     }
 
     ShowWaitingScreen() {
+        this.Particles = [];
+        GameState.Canvas.clearRect(0, 0, 1280, 720);
         let tileSize = Math.floor((720 - GameState.WallSizeOption * 3) / Math.max(12, 4));
         let walls = [];
         for (let i = 0; i < 220; i++) {
@@ -471,6 +473,8 @@ class ConnectedScreenMenu extends GameMenu {
                     i += 1;
                 }
             }
+        } else if (message == "end") {
+            this.ShowWaitingScreen();
         }
     }
 
