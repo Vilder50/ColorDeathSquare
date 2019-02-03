@@ -471,6 +471,9 @@ class ConnectedScreenMenu extends GameMenu {
                     this.Wins.push({ ID: Number(packetsParts[i]), Amount: Number(packetsParts[i + 1]) });
                     this.UpdateWinScores();
                     i += 1;
+                } else if (state == "w") {
+                    this.Boxes[0].Color = GameState.CreateColorString(GameState.GetColor(Number(packetsParts[i])));
+                    this.Boxes[1].Color = this.Boxes[0].Color;
                 }
             }
         } else if (message == "end") {
@@ -726,6 +729,7 @@ class GameUpdates {
         this.DiedUpdates = "";
         this.KillScoresUpdate = "";
         this.WinScoresUpdate = "";
+        this.WinnerUpdate = "";
     }
 
     ColoredTile(x, y, colorID, colorIDBefore) {
@@ -791,6 +795,9 @@ class GameUpdates {
             }
             if (this.WinScoresUpdate != "") {
                 fullUpdateString += ",sw" + this.WinScoresUpdate;
+            }
+            if (this.WinnerUpdate != "") {
+                fullUpdateString += ",w" + this.WinnerUpdate;
             }
 
             GameState.Socket.send("Packet," + fullUpdateString);

@@ -567,6 +567,7 @@ class GameMenu extends Menu {
                 if (teams.length >= 1) {
                     let winner = teams[Math.floor(Math.random() * teams.length)];
                     GameState.Wins[winner]++;
+                    this.UpdatesList.WinnerUpdate = "," + winner;
                     this.Boxes[0].Color = GameState.CreateColorString(GameState.GetColor(winner));
                     this.Boxes[1].Color = this.Boxes[0].Color;
                     this.UpdateWinScores();
