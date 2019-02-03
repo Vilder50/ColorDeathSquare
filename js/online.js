@@ -71,7 +71,9 @@ class TryConnectMenu extends Menu {
                                 }
                             } else if (message.startsWith("New:")) {
                                 let newID = Number(message.substring(4));
-                                GameState.Players.push(new ConnectedPlayer(0, newID));
+                                let colorID = GameState.GetNextID();
+                                GameState.Players.push(new ConnectedPlayer(colorID, newID));
+                                GameState.Socket.send("Player:" + newID + ",color," + GameState.GetColor(colorID));
                                 if (GameState.LoadedMenu instanceof PlayerScreen) {
                                     GameState.LoadedMenu.LoadButtons();
                                 }

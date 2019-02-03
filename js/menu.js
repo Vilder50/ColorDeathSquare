@@ -242,14 +242,14 @@ class PlayerScreen extends Menu {
                 break;
             case 3:
                 this.RemvoingPlayer = false;
-                GameState.Players.push(new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], this.GetAddingID()));
+                GameState.Players.push(new Player(["arrowup", "arrowleft", "arrowdown", "arrowright", " "], GameState.GetNextID()));
                 this.ShownPage = Math.floor((GameState.Players.length - 1) / 6);
                 this.LoadButtons();
                 this.DeselectPlayer();
                 break;
             case 4:
                 this.RemvoingPlayer = false;
-                GameState.Players.push(new Robot(this.GetAddingID()));
+                GameState.Players.push(new Robot(GameState.GetNextID()));
                 this.ShownPage = Math.floor((GameState.Players.length - 1) / 6);
                 this.LoadButtons();
                 this.DeselectPlayer();
@@ -349,23 +349,6 @@ class PlayerScreen extends Menu {
                 for (let i = 0; i < 5; i++) {
                     this.Buttons.push(new Button(560 + i * 80, 330, 70, 60, player.Difficulty == i ? GameState.CreateColorString(GameState.GetColor(i)) : "#909090", player.Difficulty == i ? GameState.WhitenColor(GameState.GetColor(i), 0.7) : "#dddddd", (i + 1), 16 + i));
                 }
-            }
-        }
-    }
-
-    GetAddingID() {
-        let foundNumber = false;
-        for (let i = 0; true; i++) {
-            for (let j = 0; j < GameState.Players.length; j++) {
-                if (GameState.Players[j].ID == i) {
-                    foundNumber = false;
-                    break;
-                }
-                foundNumber = true;
-            }
-
-            if (foundNumber) {
-                return i;
             }
         }
     }

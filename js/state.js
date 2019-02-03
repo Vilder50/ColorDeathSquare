@@ -73,6 +73,23 @@ class State {
         }
     }
 
+    GetNextID() {
+        let foundNumber = false;
+        for (let i = 0; true; i++) {
+            for (let j = 0; j < GameState.Players.length; j++) {
+                if (GameState.Players[j].ID == i) {
+                    foundNumber = false;
+                    break;
+                }
+                foundNumber = true;
+            }
+
+            if (foundNumber) {
+                return i;
+            }
+        }
+    }
+
     CreateColorString(rawColor) {
         return "rgb(" + rawColor[0] + "," + rawColor[1] + "," + rawColor[2] + ")";
     }
