@@ -383,7 +383,11 @@ class ConnectedScreenMenu extends GameMenu {
                     i += 2;
                 } else if (state == "m") {
                     if (Number(packetsParts[i]) == GameState.ConnectionID) {
-
+                        if (GameState.Players[0].LastX != Number(packetsParts[i + 2]) || GameState.Players[0].LastY != Number(packetsParts[i + 3])) {
+                            GameState.Players[0].X = Number(packetsParts[i + 2]) * 1000;
+                            GameState.Players[0].Y = Number(packetsParts[i + 3]) * 1000;
+                            GameState.Players[0].Move(Number(packetsParts[i + 1]));
+                        }
                     } else {
                         for (let j = 0; j < GameState.Players.length; j++) {
                             if (GameState.Players[j].PlayerID == Number(packetsParts[i])) {
@@ -433,6 +437,10 @@ class ConnectedScreenMenu extends GameMenu {
                 GameState.Players[i].Reset();
                 GameState.Players[i].X = playerCoords[i].X * 1000;
                 GameState.Players[i].Y = playerCoords[i].Y * 1000;
+                if (i == 0) {
+                    GameState.Players[i].LastX = playerCoords[i].X * 1000;
+                    GameState.Players[i].LastY = playerCoords[i].Y * 1000;
+                }
                 this.Map.ColorTile(playerCoords[i].X, playerCoords[i].Y, GameState.Players[i].ID);
             }
         }
@@ -525,22 +533,34 @@ class ConnectedPlayer extends Player {
 class ThisConnectedPlayer extends Player {
     constructor(keys, id) {
         super(keys, id);
+        this.LastX = 0;
+        this.LastY = 0;
     }
 
-    Move() {
-        let moved = -1;
-        let overrideAble = false;
-        for (let i = 0; i < 4; i++) {
-            if (GameState.KeyStates[this.Keys[i]] === true && (!this.Moving() || overrideAble) && this.CanMove(i)) {
-                if (this.LastDirection === i) {
-                    overrideAble = true;
+    Move(direction) {
+        if (direction == undefined) {
+            let moved = -1;
+            let overrideAble = false;
+            for (let i = 0; i < 4; i++) {
+                if (GameState.KeyStates[this.Keys[i]] === true && (!this.Moving() || overrideAble) && this.CanMove(i)) {
+                    if (this.LastDirection === i) {
+                        overrideAble = true;
+                    }
+                    this.LastX = Math.round(this.X / 1000);
+                    this.LastY = Math.round(this.Y / 1000);
+                    this.MovingIn(i);
+                    moved = i;
                 }
-                this.MovingIn(i);
-                moved = i;
             }
-        }
-        if (moved != -1) {
-            GameState.Socket.send("Move:" + moved);
+            if (moved != -1) {
+                GameState.Socket.send("Move:" + moved);
+            }
+        } else {
+            if (this.CanMove(direction)) {
+                this.LastX = Math.round(this.X / 1000);
+                this.LastY = Math.round(this.Y / 1000);
+                this.MovingIn(direction);
+            }
         }
     }
 
