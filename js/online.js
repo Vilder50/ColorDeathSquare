@@ -459,18 +459,23 @@ class ConnectedScreenMenu extends GameMenu {
                     }
                     i += 2;
                 } else if (state == "m") {
+                    let direction = Number(packetsParts[i + 1]);
                     if (Number(packetsParts[i]) == GameState.ConnectionID) {
                         if (GameState.Players[0].LastX != Number(packetsParts[i + 2]) || GameState.Players[0].LastY != Number(packetsParts[i + 3])) {
                             GameState.Players[0].X = Number(packetsParts[i + 2]) * 1000;
                             GameState.Players[0].Y = Number(packetsParts[i + 3]) * 1000;
-                            GameState.Players[0].Move(Number(packetsParts[i + 1]));
+                            if (direction != -1) {
+                                GameState.Players[0].Move(direction);
+                            }
                         }
                     } else {
                         for (let j = 0; j < GameState.Players.length; j++) {
                             if (GameState.Players[j].PlayerID == Number(packetsParts[i])) {
                                 GameState.Players[j].X = Number(packetsParts[i + 2]) * 1000;
                                 GameState.Players[j].Y = Number(packetsParts[i + 3]) * 1000;
-                                GameState.Players[j].Move(Number(packetsParts[i + 1]));
+                                if (direction != -1) {
+                                    GameState.Players[j].Move(direction);
+                                }
                                 break;
                             }
                         }
@@ -638,9 +643,13 @@ class ConnectedPlayer extends Player {
                 }
                 this.MovingIn(i);
             }
-            if (this.MoveIn == i && this.CanMove(i) && !this.Moving()) {
-                this.MovingIn(i);
-                this.MoveIn = -1;
+            if (this.MoveIn == i && (!this.Moving() || overrideAble)) {
+                if (this.CanMove(i)) {
+                    this.MovingIn(i);
+                    this.MoveIn = -1;
+                } else {
+                    GameState.LoadedMenu.UpdatesList.PlayerMoved(this.PlayerID, -1, Math.round(this.X / 1000), Math.round(this.Y / 1000));
+                }
             }
         }
     }
