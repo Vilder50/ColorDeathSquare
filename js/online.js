@@ -462,11 +462,14 @@ class ConnectedScreenMenu extends GameMenu {
                     let direction = Number(packetsParts[i + 1]);
                     if (Number(packetsParts[i]) == GameState.ConnectionID) {
                         if (GameState.Players[0].LastX != Number(packetsParts[i + 2]) || GameState.Players[0].LastY != Number(packetsParts[i + 3])) {
-                            GameState.Players[0].X = Number(packetsParts[i + 2]) * 1000;
-                            GameState.Players[0].Y = Number(packetsParts[i + 3]) * 1000;
-                            if (direction != -1) {
-                                GameState.Players[0].Move(direction);
-                            }
+                            //Bad lag solving method:
+                            //Uncomment to get back to normal
+
+                            //GameState.Players[0].X = Number(packetsParts[i + 2]) * 1000;
+                            //GameState.Players[0].Y = Number(packetsParts[i + 3]) * 1000;
+                            //if (direction != -1) {
+                            //    GameState.Players[0].Move(direction);
+                            //}
                         }
                     } else {
                         for (let j = 0; j < GameState.Players.length; j++) {
@@ -630,6 +633,33 @@ class ConnectedPlayer extends Player {
                 case "move,3":
                     this.MoveIn = Number(command.substring(5));
                     break;
+                //Bad lag solving method:
+                //Comment to get back to normal
+                default:
+                    if (command.startsWith("move,")) {
+                        let moveParts = command.split(",");
+                        if (moveParts.length == 4) {
+                            let moveDirection = Number(moveParts[1]);
+                            let x = Number(moveParts[2]);
+                            let y = Number(moveParts[3]);
+                            if (!isNaN(moveDirection) && !isNaN(x) && !isNaN(y) && x >= 0 && x < GameState.LoadedMenu.Map.Width && y >= 0 && y < GameState.LoadedMenu.Map.Height) {
+                                this.X = x * 1000;
+                                this.Y = y * 1000;
+                                if (this.Trapped(x, y)) {
+                                    return false;
+                                }
+                                if (!(GameState.LoadedMenu.Map.Tiles[x][y].From === this.ID)) {
+                                    GameState.LoadedMenu.Map.ColorTile(x, y, this.ID)
+                                    this.AddMoving = 10000
+                                    this.Points += 1;
+                                }
+                                this.MotionX = 0;
+                                this.MotionY = 0;
+                                this.MoveIn = moveDirection;
+                            }
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -680,19 +710,15 @@ class ThisConnectedPlayer extends Player {
                     if (this.LastDirection === i) {
                         overrideAble = true;
                     }
-                    this.LastX = Math.round(this.X / 1000);
-                    this.LastY = Math.round(this.Y / 1000);
                     this.MovingIn(i);
                     moved = i;
                 }
             }
             if (moved != -1) {
-                GameState.Socket.send("Move:" + moved);
+                GameState.Socket.send("Move:" + moved + "," + Math.round(this.X / 1000) + "," + Math.round(this.Y / 1000));
             }
         } else {
             if (this.CanMove(direction)) {
-                this.LastX = Math.round(this.X / 1000);
-                this.LastY = Math.round(this.Y / 1000);
                 this.MovingIn(direction);
             }
         }
