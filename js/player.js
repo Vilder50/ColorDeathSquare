@@ -5,6 +5,7 @@
         this.ID = id;
         this.X = 0;
         this.Y = 0;
+        this.Speed = 200;
 
         this.Reset();
     }
@@ -193,21 +194,21 @@
 
     UpdateMovement() {
         if (this.MotionX > 0) {
-            this.MotionX -= 200;
-            this.X -= 200;
+            this.X -= Math.min(this.MotionX, this.Speed);
+            this.MotionX -= Math.min(this.MotionX, this.Speed);
             GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, 1, Math.random() * 0.8 - 0.4, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         } else if (this.MotionX < 0) {
-            this.MotionX += 200;
-            this.X += 200;
+            this.X += Math.min(this.MotionX * -1, this.Speed);
+            this.MotionX += Math.min(this.MotionX * -1, this.Speed);
             GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, -1, Math.random() * 0.8 - 0.4, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         }
         if (this.MotionY > 0) {
-            this.MotionY -= 200;
-            this.Y -= 200;
+            this.Y -= Math.min(this.MotionY, this.Speed);
+            this.MotionY -= Math.min(this.MotionY, this.Speed);;
             GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.random() * 0.8 - 0.4, 1, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         } else if (this.MotionY < 0) {
-            this.MotionY += 200;
-            this.Y += 200;
+            this.Y += Math.min(this.MotionY * -1, this.Speed);
+            this.MotionY += Math.min(this.MotionY * -1, this.Speed);
             GameState.LoadedMenu.Particles.push(new ColorParticle(this.X / 1000, this.Y / 1000, Math.random() * 0.8 - 0.4, -1, 0.2 + Math.random() * 0.2, this.ColorNow(), GameState.LoadedMenu.Map.TileSize / 2.5 + Math.random() * 0.8));
         }
 

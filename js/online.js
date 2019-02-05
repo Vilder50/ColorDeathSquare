@@ -597,6 +597,7 @@ class ConnectedPlayer extends Player {
         this.ConnectionID = connectionID;
         this.Dead = true;
         this.MoveIn = -1;
+        this.Speed = 250;
     }
 
     ExtraReset() {
