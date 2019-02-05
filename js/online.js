@@ -378,6 +378,7 @@ class ConnectedScreenMenu extends GameMenu {
         let message = e.data;
         if (message.startsWith("New game")) {
             GameState.Players.splice(1, GameState.Players.length - 1);
+            this.ColoredTiles = [];
             let gameParts = message.split(",");
             let state = "w";
             let width = gameParts[1];
@@ -713,11 +714,10 @@ class ThisConnectedPlayer extends Player {
         let locationX = Math.round(this.X / 1000);
         let locationY = Math.round(this.Y / 1000);
         if (this.Moving()) {
-            if (!(GameState.LoadedMenu.Map.Tiles[locationX][locationY].From === this.ID)) {
+            if (!(GameState.LoadedMenu.Map.Tiles[locationX][locationY].From === this.ID) && GameState.LoadedMenu.Map.Tiles[locationX][locationY].State != 1) {
                 GameState.LoadedMenu.ColoredTiles.push({ X: locationX, Y: locationY, Before: GameState.LoadedMenu.Map.Tiles[locationX][locationY].From, Chances: 10 });
                 GameState.LoadedMenu.Map.ColorTile(locationX, locationY, this.ID);
-                    this.AddMoving = 10000;
-                this.Points += 1;
+                this.AddMoving = 10000;
             }
         }
     }
