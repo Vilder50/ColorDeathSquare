@@ -481,9 +481,9 @@ class GameMenu extends Menu {
     StartGame() {
         GameState.Canvas.clearRect(0, 0, 1280, 720);
         let totalSize = GameState.Players.length * (GameState.MazeSizeOption + 1) * 7;
-        let around = Math.round(Math.sqrt(totalSize));
+        let around = Math.ceil(Math.sqrt(totalSize));
         let randomness = Math.floor(around / 3);
-        let width = around + Math.floor(Math.random() * randomness - randomness / 2);
+        let width = around + Math.floor(Math.random() * randomness / 2);
         let height = Math.round(totalSize / width);
         let tileSize = Math.floor(Math.min((900 - GameState.WallSizeOption * 3) / width, (720 - GameState.WallSizeOption * 3) / height));
 
